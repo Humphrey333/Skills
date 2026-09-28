@@ -16,8 +16,22 @@ A new embedded topic goes through three stages, in strict order: research (facts
 
 ## Stage 1 — Research (facts and trade-offs only — no code)
 
+> **We are not coding yet. Ask questions about anything you're uncertain about.**
+
 - Gather and summarize what's known about the topic/problem domain: relevant existing code in the project, prior art, platform/hardware constraints.
-- **Hard rule:** if information is missing, or a platform/component document is needed (datasheet, TRM, errata), stop and ask the developer — do not guess. Same no-fetch rule as `embedded-debugging` Stage 2: never download a document yourself; name the exact document (or search segments if unsure) and wait for the developer to supply it.
+- **Hard rule — ask, never assume:** if any point relevant to the topic isn't explicitly stated by the developer — requirements, constraints, hardware details, desired behavior, scope, edge cases, a platform/component document (datasheet, TRM, errata) — stop and ask. Do not guess, infer a "reasonable default," or fill the gap yourself, even temporarily. Same no-fetch rule as `embedded-debugging` Stage 2 for documents: never download one yourself; name the exact document (or search segments if unsure) and wait for the developer to supply it.
+  - Stating an assumption out loud ("I'll assume X unless told otherwise") does not satisfy this rule — it is still an assumption. Ask the question and wait for an explicit answer instead of proceeding on a caveat.
+  - An inference drawn from the existing codebase is a *suggested answer*, not a confirmed one — surface it as part of the question, don't substitute it for asking.
+
+  | Rationalization | Reality |
+  |---|---|
+  | "This detail is minor/obvious" | If the developer didn't say it, it isn't confirmed. Ask. |
+  | "I'll state my assumption and keep going" | A stated assumption is still unconfirmed — get an explicit answer before using it. |
+  | "Asking slows things down" | An acted-on wrong assumption costs far more than one question. |
+  | "I can infer this from the code" | Inference isn't the developer's confirmation — offer it as your suggested answer within the question. |
+  | "It's just research, not code yet" | Research is exactly where an unconfirmed assumption gets baked into the plan, then the code. |
+
+  Red flags — stop and ask instead of continuing: writing "assuming…"/"presumably…" anywhere in the doc; filling in a register value, pin, timing, protocol detail, or behavior that wasn't stated or supplied; picking a default for anything the developer left open.
 - For every viable approach/aspect, write out explicit **pros, cons, and trade-offs**. This comparison is the most important output of this stage — don't skip or shortcut it even when one option looks obviously best.
 - Note any experiments that would help down-select between close options (e.g. a quick spike, a benchmark, a hardware-in-loop check).
 - **Do not generate pseudocode or implementation code here** — that belongs only to Stage 3.
@@ -56,3 +70,4 @@ Write/update `Plans/YYYY-MM-DD-<topic-slug>.md` as stages complete: research sum
 - Machine-sounding comments that restate the code instead of explaining the non-obvious reasoning behind it.
 - Inventing a code pattern instead of grounding Stage 3 output in verified sample code/reference flow.
 - Guessing at missing information or fetching a platform document yourself instead of asking (Stage 1 hard rule).
+- Filling any undeclared point — a detail, default, or inference — with an assumption instead of stopping to ask, or stating the assumption as a caveat instead of getting explicit confirmation.
