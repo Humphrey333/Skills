@@ -1,5 +1,5 @@
 ---
-name: embedded-debugging
+name: embed_debug
 description: Use when a user reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons), especially when the report is incomplete or platform documentation is needed to locate the cause.
 ---
 
@@ -14,9 +14,18 @@ Locate embedded Linux bugs — in code logic or in configuration (sensor/periphe
 - Bug reports, crashes, kernel oops/panics, hangs, misbehaving peripherals (e.g. a camera sensor module like Sony IMX586 producing bad frames), or misconfiguration in embedded Linux code or configuration (kernel drivers, bootloader, device-tree/sensor settings, userspace daemons).
 - Not for: greenfield feature design, or bugs in code Claude can directly execute/test (e.g. a hosted app with a runnable test suite) — normal debugging applies there instead.
 
-## Stage 0 — Info Gate (mandatory, do this first)
+## Step 0 — Load Shared Knowledge (mandatory, do this first)
 
-Before searching any code, confirm the report includes:
+Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
+
+- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
+- Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
+- Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
+- If `INDEX.md` doesn't exist or nothing matches, say so and continue.
+
+## Stage 0 — Info Gate (mandatory, before searching code)
+
+Before searching any code, confirm the report includes (items already covered by loaded knowledge — e.g. a known key document or ruled-out cause — don't need to be asked again):
 
 - **Context** — what the system/component is supposed to do
 - **Code/file references** — relevant files, functions, or subsystem
@@ -68,6 +77,7 @@ See `references/techniques.md` for how to apply each.
 
 ## Common Mistakes
 
+- Skipping Step 0 — re-asking for facts, documents, or ruled-out causes already recorded in `~/.claude/Knowledge/`.
 - Skipping the info gate and searching on a vague report — wastes cycles on the wrong code path.
 - Treating "what's been tried" as optional — re-suggesting already-ruled-out fixes wastes the developer's time.
 - Trying to execute or reproduce the bug directly — usually not possible on embedded targets; reason about the code and give guidance instead.
