@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libgtest-dev clang-format clang-tidy
+      - name: Configure
+        run: cmake -S . -B build/ci
+      - name: Build
+        run: cmake --build build/ci -j
+      - name: Test
+        run: ctest --test-dir build/ci --output-on-failure
+      - name: Format check
+        run: tools/run-clang-format.sh --check
+      - name: clang-tidy
+        run: tools/run-clang-tidy.sh build/ci

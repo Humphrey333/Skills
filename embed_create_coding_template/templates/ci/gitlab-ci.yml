@@ -1,0 +1,34 @@
+image: ubuntu:24.04
+
+stages:
+  - build
+  - test
+  - lint
+
+before_script:
+  - apt-get update -qq
+  - apt-get install -y -qq cmake g++ libgtest-dev clang-format clang-tidy
+
+build:
+  stage: build
+  script:
+    - cmake -S . -B build/ci
+    - cmake --build build/ci -j
+  artifacts:
+    paths:
+      - build/ci
+
+test:
+  stage: test
+  script:
+    - ctest --test-dir build/ci --output-on-failure
+
+format:
+  stage: lint
+  script:
+    - tools/run-clang-format.sh --check
+
+tidy:
+  stage: lint
+  script:
+    - tools/run-clang-tidy.sh build/ci

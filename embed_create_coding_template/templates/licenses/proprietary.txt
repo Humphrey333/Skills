@@ -1,0 +1,8 @@
+Copyright (c) @YEAR@ @COPYRIGHT_HOLDER@. All rights reserved.
+
+This software and its source code are proprietary and confidential. No part
+of it may be copied, modified, distributed, or disclosed without the prior
+written permission of @COPYRIGHT_HOLDER@.
+
+NOTE: this is a placeholder notice, not legal advice. Replace it with the
+license text approved for this project before distributing.
