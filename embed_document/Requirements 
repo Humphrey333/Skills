@@ -1,0 +1,80 @@
+*** Instructions for create a README.md
+I generally include the table of contents in my introduction so readers can jump to a relevant section. Read the Plans we have made and the code base, to make sure about the features we have add, the fix we have done, then check the current of document, modify it if needed.
+
+You refer this standard to write the  skills for README: https://github.com/matiassingers/awesome-readme . Learn from this, and  you can with me  choose 1 style to apply to the skill
+
+This is the the structure of the README, create a new one if it not  existed, if it existed, update it
+
+**********************
+About Your Project
+Include a section which describes your project in more detail than the introduction. Aim to answer these questions:
+
+What is your project?
+What is the intended use of your project?
+How does it work?
+Who uses it?
+How can others benefit from using your project?
+
+
+Aim to include details regarding:
+
+Build status (e.g. status widget from your CI server)
+Health of the project
+Information about the current release and how to find it (or link to the RELEASE file)
+Known issues
+Items you haven’t been able to implement/fix yet
+Things you’re currently working on
+Whether or not you want to accept contributions
+Getting Started on Your Project
+Most of us only read a project’s README in order to figure out how to start using a project. This section should be the bulk of your README contents. Keep in mind that many people start reading documentation only when they encounter a problem. Have you anticipated problems users may have? Are you recording solutions to common problems in an accessible place for new developers?
+
+The easiest way to fill out this section is to help someone who has never used your project get set up, and write down the exact instructions. One you have those instructions ready, ask another person to follow them to see if you missed any critical steps.
+
+You want to cover the following topics:
+
+Dependencies that need to be installed for building/using your project,
+Instructions for installing the dependencies
+How to configure your project, and information on configuration options
+How to build your project
+How to install your project
+How to run tests
+How to use your project, or API usage information
+Make sure to provide working code and command-line examples for each of these sections. And keep this section up to date!
+
+
+Release Process
+You may also want to include notes on your project’s release process:
+
+What is your project’s release cycle?
+How can someone find the latest release?
+What branches are used in the development process? (master, stable, etc.)
+When are new releases made?
+How to Get Help
+Your documentation may not cover all of the problems that a user might have. Provide instructions for users to get more help. Include the best method of contact or a link to a relevant user group.
+
+
+Further Reading
+Your README is just a starting point for your project. Provide links to other references that people can refer to, such as:
+
+Library documentation
+Architecture references
+FAQ
+INSTALL file
+CONTRIBUTING guidelines
+CODEOWNERS
+Related blog posts or white papers
+Authors
+Provide some information on the folks creating and maintaining your project. Include website links, GitHub profile links, and any contact information you want to share.
+
+License
+Provide a summary of the software’s license and a link to your detailed LICENSE file.
+
+Also include relevant licenses from any external code that you have included.
+**********************
+
+
+
+*** Instructions for create a BUILD.md
+Searching the required dependencies inside the project, make the instructions how to use dependencies 
+
+
