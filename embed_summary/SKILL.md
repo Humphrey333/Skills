@@ -23,7 +23,7 @@ Read `~/.claude/Knowledge/INDEX.md` and every topic file it lists that relates t
 
 ## Step 1 — Identify the Topic
 
-- Suggest a topic slug — an existing one from `INDEX.md` if the session continues that topic, otherwise a new one (from the matching `Plans/YYYY-MM-DD-<topic-slug>.md` if one exists) — and ask the developer to confirm it. Same hard rule as the planning skill: **ask, never assume.**
+- Suggest a topic slug — an existing one from `INDEX.md` if the session continues that topic, otherwise a new one (from the matching `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` if one exists) — and ask the developer to confirm it. Same hard rule as the planning skill: **ask, never assume.**
 - Slugs are global across projects, so make them specific (part number, board, subsystem — e.g. `imx586-mipi-csi-bringup`, not `camera`).
 - If the session covered several unrelated topics, ask whether to split them into separate knowledge files.
 
@@ -74,7 +74,7 @@ Also point out items that may belong somewhere else as well — suggestions only
 # <Topic title>
 
 Project: <absolute path of the project this topic belongs to>
-Related plan: <project>/Plans/YYYY-MM-DD-<topic-slug>.md (if any)
+Related plan: <project>/Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md (if any)
 
 ## Session YYYY-MM-DD
 
