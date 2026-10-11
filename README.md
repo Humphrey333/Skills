@@ -26,6 +26,8 @@ The `embed_*` skills form a chain:
 
 plan (`embed_planning-embedded-topics`) → skeleton (`embed_create_coding_template`) → debug (`embed_debug`) → keep docs true (`embed_document`) → capture knowledge (`embed_summary`)
 
+`embed_learning` sits beside the chain: it teaches the developer a topic (learning path, book companion, exams).
+
 `handoff` and `half-clone` sit outside the chain and carry a session over to a new one. Four skills never self-trigger: `/embed_summary`, `/embed_document`, `/handoff`, `/half-clone`.
 
 **[Back to top](#table-of-contents)**
@@ -39,6 +41,7 @@ plan (`embed_planning-embedded-topics`) → skeleton (`embed_create_coding_templ
 | `embed_create_coding_template` | TODO: verify |
 | `embed_debug` | TODO: verify |
 | `embed_summary` | TODO: verify |
+| `embed_learning` | TODO: verify |
 | `handoff` | TODO: verify |
 | `half-clone` | TODO: verify |
 
@@ -77,6 +80,7 @@ Restart the Claude Code session afterwards. `handoff` and `half-clone` are not i
 | `embed_debug` | A bug, crash, oops, hang or misconfiguration in embedded Linux code | auto | greenfield design; code Claude can run and test directly |
 | `embed_document` | You want `README.md` / `BUILD.md` to match Plans, code and build files | `/embed_document` | session knowledge → `embed_summary`; skeleton → `embed_create_coding_template` |
 | `embed_summary` | End of a session or milestone; capture what was learned | `/embed_summary` | plans → `embed_planning-embedded-topics`; bugs → `embed_debug` |
+| `embed_learning` | You want to learn a topic (7-day path + books), study a book you supply, or take/grade an exam | auto | implementing a topic → `embed_planning-embedded-topics`; bugs → `embed_debug` |
 | `handoff` | End of a session; write `HANDOFF.md` for a fresh session | `/handoff` | continuing mid-dialogue → `half-clone` |
 | `half-clone` | A long conversation; write `HALF-CLONE.md` of the recent half | `/half-clone` | end-of-session summary → `handoff` |
 
