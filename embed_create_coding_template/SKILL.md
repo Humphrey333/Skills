@@ -13,7 +13,7 @@ Core rule: **the template is the definition; the plan only fills it in.** Do not
 
 ## When to Use
 
-- A `Plans/YYYY-MM-DD-<topic-slug>.md` exists with a chosen direction and a step-by-step plan, and the developer asks for the project/skeleton/template to be created.
+- A `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` exists with a chosen direction and a step-by-step plan, and the developer asks for the project/skeleton/template to be created.
 - The developer asks to improve the `.clang-format` / `.clang-tidy` of an existing project (see "Refining lint configs").
 - Not for: a topic that has no agreed plan yet (use `embed_planning-embedded-topics`), an existing bug (use `embed_debug`), or out-of-tree kernel modules, Yocto recipes, or patch-on-vendor-source projects — those are outside this template.
 
@@ -28,7 +28,7 @@ Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, m
 
 ## Step 1 — Require the Agreed Plan
 
-Locate `Plans/YYYY-MM-DD-<topic-slug>.md` for this topic. If there is none, or it has no chosen direction and plan steps, **stop** and tell the developer to finish `/embed_planning-embedded-topics` first. Do not scaffold from a verbal description.
+Locate `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` for this topic. If there is none, or it has no chosen direction and plan steps, **stop** and tell the developer to finish `/embed_planning-embedded-topics` first. Do not scaffold from a verbal description.
 
 From the plan, extract (these become *suggested answers* in Step 2, not confirmed ones):
 
