@@ -7,7 +7,7 @@ description: Use when starting a new embedded-engineering topic (new peripheral 
 
 ## Overview
 
-A new embedded topic goes through three stages, in strict order: research (facts and trade-offs only, no code), planning (pick a direction, then build a step-by-step plan), and output (the actual pseudocode/reference code and setup docs). Each stage's saved doc lives at `Plans/YYYY-MM-DD-<topic-slug>.md`, kept updated as stages complete.
+A new embedded topic goes through three stages, in strict order: research (facts and trade-offs only, no code), planning (pick a direction, then build a step-by-step plan), and output (the actual pseudocode/reference code and setup docs). The plan is closed out with a clean recap and an explicit final approval, then stored as `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory before any output is generated.
 
 ## When to Use
 
@@ -55,9 +55,18 @@ Present the researched approaches with their trade-offs and ask the developer wh
 
 Once a direction is chosen, write the implementation/porting plan as ordered steps. Every step that involves programming must carry concrete instructions (what to change, which files/APIs/registers, why). Include verification criteria alongside the plan (tests, hardware-in-loop checks, expected log/register state, how to confirm each step worked).
 
+### Step 3 — Final Review and Approval (gate before Stage 3)
+
+Once the step-by-step plan is settled, do not move on silently:
+
+1. **Recap the plan cleanly and briefly** as a standalone document the developer can read without the discussion: topic/goal, confirmed constraints, chosen direction (with the one-line reason and the main trade-off accepted), the ordered steps, verification criteria, and any still-open questions. No new content — only what was already agreed.
+2. **Propose the file name** `Plan_<topic-slug>_<YYYY-MM-DD>.md` (slug = what the plan is for, e.g. `Plan_imx586-mipi-csi-bringup_2026-10-10.md`) and ask exactly once: *"Do you agree with this plan, and with saving it under this name?"*
+3. **Wait for an explicit yes.** Corrections or "no" → fix the plan, re-show the recap, and ask again. Silence, "looks fine, whatever", or your own judgment that it's agreed does not count.
+4. **On yes:** write the recap to `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory (create `Plans/` if missing), tell the developer the path, then continue to Stage 3. Do not start Stage 3 before the file is written.
+
 ## Stage 3 — Output
 
-Only now generate implementation artifacts, following the Stage 2 plan:
+Only now, with the approved plan stored, generate implementation artifacts, following the Stage 2 plan:
 
 - **Pseudocode/reference code** that follows the flow of verified sample code already in the project or supplied by the developer — ground it in precedent, don't invent an unfamiliar pattern.
 - **Comments** must read like a human explaining the non-obvious part of a block to another developer (register meaning, protocol step, timing constraint, why this order matters) — not restating what the code already shows.
@@ -68,7 +77,7 @@ Only now generate implementation artifacts, following the Stage 2 plan:
 
 ## Save the Topic Doc
 
-Write/update `Plans/YYYY-MM-DD-<topic-slug>.md` as stages complete: research summary + trade-offs (Stage 1), chosen direction + step-by-step plan + verification criteria (Stage 2). Stage 3's code/README/instructions are project deliverables, not part of this doc.
+The stored doc is `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory, written once at the Stage 2 Step 3 approval gate (not before, not left unsaved after). Content: research summary + trade-offs (Stage 1), chosen direction + step-by-step plan + verification criteria (Stage 2). If the plan changes later, update the same file and re-confirm with the developer. Stage 3's code/README/instructions are project deliverables, not part of this doc.
 
 ## Common Mistakes
 
@@ -76,6 +85,9 @@ Write/update `Plans/YYYY-MM-DD-<topic-slug>.md` as stages complete: research sum
 - Generating pseudocode or code during Stage 1 or Stage 2 — reference code only belongs in Stage 3.
 - Skipping the pros/cons/trade-offs comparison in Stage 1 because one option "obviously" wins.
 - Picking the direction for the developer instead of asking in Stage 2 Step 1.
+- Moving from Stage 2 to Stage 3 without the clean recap, the single final "do you agree?" question, and an explicit yes.
+- Treating the developer's lack of objection as approval, or saving the plan file before they confirm it (and its name).
+- Saving the plan under any name other than `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md`, or outside the current directory's `Plans/`.
 - Writing plan steps without concrete, actionable instructions for whoever implements them.
 - Machine-sounding comments that restate the code instead of explaining the non-obvious reasoning behind it.
 - Inventing a code pattern instead of grounding Stage 3 output in verified sample code/reference flow.
