@@ -77,7 +77,7 @@ Restart the Claude Code session afterwards. `handoff` and `half-clone` are not i
 |---|---|---|---|
 | `embed_planning-embedded-topics` | Starting a new bring-up, subsystem, board support or feature | auto | an existing bug → `embed_debug` |
 | `embed_create_coding_template` | A plan is agreed and you want the CMake skeleton on disk, or to refine `.clang-format`/`.clang-tidy` | auto | planning → `embed_planning-embedded-topics`; kernel modules, Yocto recipes, vendor patch projects |
-| `embed_debug` | A bug, crash, oops, hang or misconfiguration in embedded Linux code | auto | greenfield design; code Claude can run and test directly |
+| `embed_debug` | A bug, crash, oops, hang or misconfiguration in embedded Linux code; you want to know where and why it breaks, explained point by point in plain words (no code), ending in a report | auto | new bring-up/feature → `embed_planning-embedded-topics`; learning → `embed_learning`; saving knowledge → `embed_summary`; code Claude can run and test directly |
 | `embed_document` | You want `README.md` / `BUILD.md` to match Plans, code and build files | `/embed_document` | session knowledge → `embed_summary`; skeleton → `embed_create_coding_template` |
 | `embed_summary` | End of a session or milestone; capture what was learned | `/embed_summary` | plans → `embed_planning-embedded-topics`; bugs → `embed_debug` |
 | `embed_learning` | You want to learn a topic (7-day path + books), study a book you supply, or take/grade an exam | auto | implementing a topic → `embed_planning-embedded-topics`; bugs → `embed_debug` |
