@@ -15,7 +15,7 @@ Style: CLI-focused with a table of contents (from the awesome-readme list) — i
 
 - The developer invokes `/embed_document` — to create `README.md` / `BUILD.md` in a project that lacks them, or to bring existing ones up to date after features or fixes landed.
 - Manual only: never trigger this skill on your own, and never suggest running it in the middle of other work except as a one-line pointer at the end.
-- Not for: capturing decisions and trade-offs from a session (use `embed_summary`), creating the project skeleton and first-draft docs (use `embed_create_coding_template`), finding a bug (use `embed_debug`), or session continuity (use `handoff` / `half-clone`). Other documents (CHANGELOG, ARCHITECTURE.md, `docs/design.md`) are out of scope.
+- Not for: capturing decisions and trade-offs from a session (use `embed_summary`), creating the project skeleton and first-draft docs (use `embed_create_coding_template`), finding a bug (use `embed_debug`), writing the code (use `embed_executing_plans`), or session continuity (use `handoff` / `half-clone`). Other documents (CHANGELOG, ARCHITECTURE.md, `docs/design.md`) are out of scope.
 
 ## Step 0 — Load Shared Knowledge (mandatory, do this first)
 
@@ -68,6 +68,7 @@ Create `README.md` if absent; otherwise compare it with the evidence and change 
 
 Fixed section order: table of contents, About the Project, Project Status, Getting Started (Dependencies, Getting the Source, Building, Running Tests, Installation, Usage), Release Process (with Versioning), How to Get Help, Further Reading, Authors, License. `references/readme-structure.md` is the structural template — rules per section, the CLI-focused style notes and a heading skeleton. Read it before writing. The skeleton gives structure only; all content is written from the evidence.
 
+- Pass the README's prose through `embed_writing` before Step 5. Commands, versions and feature statuses stay unchanged.
 - Put working, copy-pasteable commands in Getting Started; every command comes from the project's own scripts or build files.
 - `Project Status` states what builds, what is not implemented and what is in progress, each from the developer's per-feature status answers (Step 2) — a plan step alone, or code alone, is not enough.
 - Dependencies are summarised in the README and point to `BUILD.md` for the full list.
@@ -80,13 +81,15 @@ Find the dependencies the project actually uses (see Step 2, item 2) and write `
 - how to use each dependency in this project: the CMake option or variable that selects it, the `subprojects/` entry if it is vendored, behaviour when it is absent;
 - host build, test and install steps from the project's own CMake/scripts.
 
+Pass the prose of `BUILD.md` through `embed_writing` before Step 5. Commands and dependency names stay unchanged.
+
 `BUILD.md` covers the host build only — no cross-build or Yocto section, even when the plan or build files mention one.
 
 Do not run installs or builds on the developer's machine as part of this skill unless asked. A command you could not verify from a source is marked `TODO: verify`.
 
 ## Step 5 — Propose, Then Wait
 
-Show a diff (or the full new file) per document, with each non-obvious statement's source in one short line beneath it. Ask exactly once per file set: *"Write these changes?"* Corrections → revise and show again. Only an explicit yes counts; write nothing before it, and write only the approved changes.
+Show the `embed_writing` result as a diff (or the full new file) per document, with each non-obvious statement's source in one short line beneath it. Ask exactly once per file set: *"Write these changes?"* Corrections → revise and show again. Only an explicit yes counts; write nothing before it, and write only the approved changes.
 
 ## Step 6 — Report
 
@@ -94,6 +97,7 @@ After writing: the files changed, remaining `TODO:` markers, and any statement y
 
 ## Common Mistakes
 
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
 - Self-triggering, or starting without the developer invoking `/embed_document`.
 - Skipping Step 0 and re-asking what `~/.claude/Knowledge/` already records.
 - Writing documentation from memory of the conversation instead of from Plans, code and build files, with feature status from the developer.

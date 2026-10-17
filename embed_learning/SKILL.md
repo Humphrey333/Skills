@@ -30,7 +30,7 @@ Pick examples from this world first: Jetson, GStreamer, MAVLink, drivers.
 - "Teach me X" / "build me a learning path for X" / "what are the best books for X" → **F1 Learning Path**.
 - The developer sends or names a book, PDF, document or link and wants it summarised or asks questions about it → **F2 Book Companion**.
 - "Make me an exam" / "test me on day N / chapter M", or the developer pastes back exam answers → **F3 Exam**.
-- Not for: implementing a new topic (use `embed_planning-embedded-topics`), finding a bug (use `embed_debug`), or saving what was decided in a work session (use `embed_summary`).
+- Not for: implementing a new topic (use `embed_planning-embedded-topics`, then `embed_executing_plans`), finding a bug (use `embed_debug`), or saving what was decided in a work session (use `embed_summary`).
 
 ## Step 0 — Load Shared Knowledge (mandatory, do this first)
 
@@ -52,6 +52,8 @@ Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, m
 7. **Online permission gate.** Every search or link fetch needs its own yes. Ask in this form: *"May I search for `<exact query>` to `<purpose>`?"* Then wait. Several queries may be listed in one message; a yes covers exactly the queries listed, never a later or broader one. Never download or fetch books, PDFs, datasheets or other platform documents, even freely licensed ones — a link to a PDF is something the developer opens and supplies, not something you fetch. Approved fetches are for HTML pages (official docs, a book's table of contents). If a search is refused, carry on with the material you have and tag claims as `unverified`. The F1 book search (F1 step 1) goes through this gate too: list all its queries in one message.
 
 Don't draft the day outline, the lesson or the exam until the gate questions are answered.
+
+**Writing pass (F1 to F3).** Pass lessons, path days, companion answers and exam questions through `embed_writing` before showing or saving them. Source quotes, page and chapter citations, evidence tags, answers and keys stay unchanged.
 
 ## F1 — Learning Path
 
@@ -146,6 +148,7 @@ Format rules: `references/exam-format.md`. Read it before writing any exam.
 
 ## Common Mistakes
 
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
 - Skipping Step 0, or ignoring an existing `Progress.md` and restarting or skipping days.
 - Saving to a folder the developer didn't confirm, or not recording a new topic's folder in `~/.claude/Learning/INDEX.md`, so the next session can't find its `Progress.md`.
 - Drafting a day outline, lesson or exam before the gate questions (level, current level, slug) are answered.

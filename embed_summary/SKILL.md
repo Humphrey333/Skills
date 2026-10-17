@@ -54,6 +54,8 @@ Rules:
 
 ## Step 4 — Propose, Then Wait
 
+Pass the wording of the proposed entries through `embed_writing` before showing them. Facts, part numbers and document names stay unchanged.
+
 Show the developer the proposed entries grouped by category, marked as **new / update / contradiction**. Do not write anything until they explicitly confirm or edit the list.
 
 Also point out items that may belong somewhere else as well — suggestions only, never auto-written:
@@ -104,6 +106,7 @@ Omit a category heading if it has no items for that session.
 
 ## Common Mistakes
 
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
 - Writing to files before the developer confirms the proposed list.
 - Recording an assumption or inference as a confirmed fact.
 - Duplicating entries that already exist instead of updating them; silently overwriting a contradicting entry.

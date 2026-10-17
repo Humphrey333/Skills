@@ -1,6 +1,6 @@
 ---
 name: embed_debug
-description: Use when a developer reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons) and wants to know where and why it breaks, especially when the report is incomplete or platform documentation is needed. Not for: a new bring-up or feature (use embed_planning-embedded-topics), learning a topic (use embed_learning), or saving session knowledge (use embed_summary).
+description: Use when a developer reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons) and wants to know where and why it breaks, especially when the report is incomplete or platform documentation is needed. Not for: a new bring-up or feature (use embed_planning-embedded-topics), learning a topic (use embed_learning), saving session knowledge (use embed_summary), or applying a fix (use embed_planning-embedded-topics, then embed_executing_plans).
 ---
 
 # Embedded Debugging
@@ -69,6 +69,8 @@ Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, m
 
 ## Stage 2 — Point by Point
 
+**Writing pass (Stages 2 to 4).** Pass each message and the report's prose through `embed_writing` before sending it. The Point and Solution templates, and every question to the developer, stay as they are.
+
 1. List the candidate points that explain the **reported** symptom, most likely first. Anything that doesn't explain it goes on the *also noticed* list (Hard Rule 5).
 2. Present **one point per message** in this template, then wait:
 
@@ -134,9 +136,11 @@ The developer discusses how to apply each solution. Update it until they agree. 
    - **Open questions**
 2. Propose the name `Debug_<bug-slug>_<YYYY-MM-DD>.md`, written in the **directory the skill was invoked from** (the current working directory, not `Plans/`). Ask once: *"Do you agree with this report and its name?"*
 3. Write it **only on an explicit yes**. A correction or a "no" means fix it, show it again and ask again. Silence or "whatever" is not a yes. Tell the developer the path once written.
+4. **Offer the next step, then stop.** Say that the report is the input for planning the fix with `embed_planning-embedded-topics`, which turns it into a task list that `embed_executing_plans` runs. Ask whether to start that. Do not start it, and write no fix yourself.
 
 ## Common Mistakes
 
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
 - Skipping Step 0, so facts, documents or ruled-out causes already recorded in `~/.claude/Knowledge/` get asked for again.
 - Pointing at a cause before the Stage 1 questions are answered.
 - Assuming, or stating an assumption as a caveat, instead of asking.
@@ -148,5 +152,6 @@ The developer discusses how to apply each solution. Update it until they agree. 
 - Mixing suspicious code that doesn't explain the reported symptom into the points instead of the *also noticed* list.
 - Giving solutions before every point has an outcome.
 - Writing the report without an explicit yes, under another name, or outside the invocation directory.
+- Ending without offering the fix-planning step, or starting it (or any fix) without the developer's yes.
 - Asking generic follow-ups ("more info?") instead of specific narrowing questions.
 - Trying to run or reproduce the bug yourself, instead of giving the developer a check to run.

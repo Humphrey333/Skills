@@ -37,12 +37,15 @@ Dead ends, rejected approaches, reverted changes — and *why* they were rejecte
 ### Next Steps
 Concrete, ordered, actionable steps — not "continue working on X." Each step should be specific enough that a new session could start executing it immediately.
 
+Pass the prose of the five sections through `embed_writing` before writing the file. Commands, paths and git output stay unchanged.
+
 ## After Writing
 
 Tell the developer the file's path and that a new session can be pointed at `HANDOFF.md` (e.g. "read HANDOFF.md and continue") to resume.
 
 ## Common Mistakes
 
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
 - Vague/generic sections that could describe any project.
 - Omitting failed approaches (survivorship bias) — the next session needs to know what *not* to retry.
 - Next steps phrased as goals ("finish the feature") instead of concrete actions.

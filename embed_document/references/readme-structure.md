@@ -8,6 +8,7 @@ Used by `embed_document` README mode as its structural template. Structure comes
 - The table of contents comes right after the introduction, links every section and subsection, and each long section ends with `**[Back to top](#table-of-contents)**`.
 - Commands are shown in fenced code blocks, one purpose per block, copy-pasteable from a clean checkout.
 - Prose is short; link out (BUILD.md, `docs/`, Plans) instead of duplicating.
+- All prose passes through `embed_writing` before it is shown: no AI-writing signs, no sentence without a source, sentence-case headings. A heading with no sourced fact keeps a `TODO:` line.
 - Not used: hero banners, GIF demos, badge walls. A CI build-status badge appears only when a CI configuration exists in the project.
 
 ## Sections, in order
