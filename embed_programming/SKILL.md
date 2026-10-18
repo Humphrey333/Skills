@@ -1,6 +1,6 @@
 ---
 name: embed_programming
-description: Use when writing or modifying code in an embedded project (new module, bug fix, refactor, dependency choice), especially while executing an approved plan with embed_executing_plans. Not for: planning a topic (use embed_planning-embedded-topics), locating a bug without changing code (use embed_debug), or docs (use embed_document).
+description: "Use when writing or modifying code in an embedded project (new module, bug fix, refactor, dependency choice), especially while executing an approved plan with embed_executing_plans. Not for: planning a topic (use embed_planning-embedded-topics), locating a bug without changing code (use embed_debug), or docs (use embed_document)."
 ---
 
 # Embedded Programming

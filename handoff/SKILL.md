@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Use when ending a work session and you want to capture context for a fresh session to continue from — creates/overwrites HANDOFF.md summarizing the goal, what's been done, what worked, what didn't, and next steps. Not for trimming a long conversation down to its recent half (see half-clone).
+description: "Use when ending a work session and you want to capture context for a fresh session to continue from — creates/overwrites HANDOFF.md summarizing the goal, what's been done, what worked, what didn't, and next steps. Not for trimming a long conversation down to its recent half (see half-clone)."
 ---
 
 # Handoff

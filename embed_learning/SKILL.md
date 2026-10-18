@@ -1,6 +1,6 @@
 ---
 name: embed_learning
-description: Use when the developer wants to learn a skill or topic (e.g. "teach me GStreamer", "build me a learning path", "which books should I read for X"), sends a book, PDF, document or link to study and ask questions about, asks for an exam to test their understanding, returns exam answers to be graded, or asks to be re-taught after a failed learn.py attempt. Not for: planning an implementation of a new topic (use embed_planning-embedded-topics), a bug or crash (use embed_debug), or saving session knowledge (use embed_summary).
+description: "Use when the developer wants to learn a skill or topic (e.g. \"teach me GStreamer\", \"build me a learning path\", \"which books should I read for X\"), sends a book, PDF, document or link to study and ask questions about, asks for an exam to test their understanding, returns exam answers to be graded, or asks to be re-taught after a failed learn.py attempt. Not for: planning an implementation of a new topic (use embed_planning-embedded-topics), a bug or crash (use embed_debug), or saving session knowledge (use embed_summary)."
 ---
 
 # Embedded Learning — Professor Mode

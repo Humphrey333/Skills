@@ -1,6 +1,6 @@
 ---
 name: embed_planning-embedded-topics
-description: Use when starting a new embedded-engineering topic (new peripheral bring-up, subsystem, board support, or feature) that needs research and a plan before implementation, or when embed_debug has confirmed a cause and the fix needs a plan. Not for: an existing bug that is not yet located (use embed_debug), or running an already approved plan (use embed_executing_plans).
+description: "Use when starting a new embedded-engineering topic (new peripheral bring-up, subsystem, board support, or feature) that needs research and a plan before implementation, or when embed_debug has confirmed a cause and the fix needs a plan. Not for: an existing bug that is not yet located (use embed_debug), or running an already approved plan (use embed_executing_plans)."
 ---
 
 # Planning Embedded Topics

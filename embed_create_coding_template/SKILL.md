@@ -1,6 +1,6 @@
 ---
 name: embed_create_coding_template
-description: Use when a plan for a new embedded C/C++ userspace project has been agreed with embed_planning-embedded-topics and the developer wants the CMake project skeleton created on disk (src, include, test, tools, docs, lint configs, build/BUILD docs) before coding starts, or wants an existing project's .clang-format/.clang-tidy refined. Not for planning (see embed_planning-embedded-topics), existing bugs (see embed_debug), or kernel modules, Yocto recipes and vendor-source patch projects.
+description: "Use when a plan for a new embedded C/C++ userspace project has been agreed with embed_planning-embedded-topics and the developer wants the CMake project skeleton created on disk (src, include, test, tools, docs, lint configs, build/BUILD docs) before coding starts, or wants an existing project's .clang-format/.clang-tidy refined. Not for planning (see embed_planning-embedded-topics), existing bugs (see embed_debug), or kernel modules, Yocto recipes and vendor-source patch projects."
 ---
 
 # Create Coding Template

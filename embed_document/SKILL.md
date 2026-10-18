@@ -1,6 +1,6 @@
 ---
 name: embed_document
-description: Use when the developer invokes /embed_document to create or update a project's README.md and BUILD.md so they match the project's Plans, code and build files (what was added or fixed, how to get dependencies, how to build and run). Manual only. Not for capturing session knowledge (use embed_summary), generating a new project skeleton (use embed_create_coding_template), locating a bug (use embed_debug), or carrying a session over to a new one (use handoff).
+description: "Use when the developer invokes /embed_document to create or update a project's README.md and BUILD.md so they match the project's Plans, code and build files (what was added or fixed, how to get dependencies, how to build and run). Manual only. Not for capturing session knowledge (use embed_summary), generating a new project skeleton (use embed_create_coding_template), locating a bug (use embed_debug), or carrying a session over to a new one (use handoff)."
 ---
 
 # Embedded Project Documentation

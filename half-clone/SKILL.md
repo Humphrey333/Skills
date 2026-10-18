@@ -1,6 +1,6 @@
 ---
 name: half-clone
-description: Use when the current conversation has grown long and you want a fresh session to continue mid-dialogue instead of from a cold summary — extracts and cleans the most recent half of the conversation into HALF-CLONE.md. Not for end-of-session summaries (see handoff).
+description: "Use when the current conversation has grown long and you want a fresh session to continue mid-dialogue instead of from a cold summary — extracts and cleans the most recent half of the conversation into HALF-CLONE.md. Not for end-of-session summaries (see handoff)."
 ---
 
 # Half-Clone

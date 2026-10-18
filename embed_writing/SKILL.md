@@ -1,6 +1,6 @@
 ---
 name: embed_writing
-description: Use when an embed_* skill is about to show or write text that a person will read (explanations, reports, plans, README.md, BUILD.md, learning material, handoff notes), or the developer asks to make a draft read less like AI. Not for: code (use embed_programming), deciding what a document contains (use the skill that owns it), or trimming a transcript (use half-clone).
+description: "Use when an embed_* skill is about to show or write text that a person will read (explanations, reports, plans, README.md, BUILD.md, learning material, handoff notes), or the developer asks to make a draft read less like AI. Not for: code (use embed_programming), deciding what a document contains (use the skill that owns it), or trimming a transcript (use half-clone)."
 ---
 
 # Embedded Writing

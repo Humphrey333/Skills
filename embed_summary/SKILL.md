@@ -1,6 +1,6 @@
 ---
 name: embed_summary
-description: Use when the developer invokes /embed_summary to capture what was learned in the current embedded-engineering session (constraints, pros/cons and trade-offs, decisions, key documents, corrections, preferences, open questions) into a per-topic knowledge file that future conversations can refer to.
+description: "Use when the developer invokes /embed_summary to capture what was learned in the current embedded-engineering session (constraints, pros/cons and trade-offs, decisions, key documents, corrections, preferences, open questions) into a per-topic knowledge file that future conversations can refer to."
 ---
 
 # Embedded Session Summary

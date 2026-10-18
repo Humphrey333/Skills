@@ -1,6 +1,6 @@
 ---
 name: embed_executing_plans
-description: Use when an embedded-engineering plan (Plans/Plan_<slug>_<date>.md from embed_planning-embedded-topics) has been approved and its tasks must now be implemented, or the developer says "execute the plan" or "start coding the plan". Not for: planning a new topic (use embed_planning-embedded-topics), locating a bug (use embed_debug), or writing docs (use embed_document).
+description: "Use when an embedded-engineering plan (Plans/Plan_<slug>_<date>.md from embed_planning-embedded-topics) has been approved and its tasks must now be implemented, or the developer says \"execute the plan\" or \"start coding the plan\". Not for: planning a new topic (use embed_planning-embedded-topics), locating a bug (use embed_debug), or writing docs (use embed_document)."
 ---
 
 # Executing Plans

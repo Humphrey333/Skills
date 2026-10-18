@@ -1,6 +1,6 @@
 ---
 name: embed_debug
-description: Use when a developer reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons) and wants to know where and why it breaks, especially when the report is incomplete or platform documentation is needed, or when fixes from an earlier debug report failed on the board. Not for: a new bring-up or feature (use embed_planning-embedded-topics), learning a topic (use embed_learning), saving session knowledge (use embed_summary), or applying a fix (use embed_planning-embedded-topics, then embed_executing_plans).
+description: "Use when a developer reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons) and wants to know where and why it breaks, especially when the report is incomplete or platform documentation is needed, or when fixes from an earlier debug report failed on the board. Not for: a new bring-up or feature (use embed_planning-embedded-topics), learning a topic (use embed_learning), saving session knowledge (use embed_summary), or applying a fix (use embed_planning-embedded-topics, then embed_executing_plans)."
 ---
 
 # Embedded Debugging

@@ -54,7 +54,7 @@ Only `embed_planning-embedded-topics` carries the Step 0 block. Do not add it to
 
 Structure every `SKILL.md` the way the existing ones are structured — deviation makes the set harder to maintain:
 
-1. YAML frontmatter with `name` (matching the directory name exactly) and a `description` that starts "Use when …", names concrete triggers, and ends with the negative routing case.
+1. YAML frontmatter with `name` (matching the directory name exactly) and a `description` that is **always double-quoted** (`description: "Use when …"`, inner `"` escaped as `\"`), because an unquoted description containing `: ` is invalid YAML and GitHub will not parse it. The description starts "Use when …", names concrete triggers, and ends with the negative routing case.
 2. `# Title` → `## Overview` (core principle in a few lines) → `## When to Use` (positive bullets + a `Not for:` bullet) → numbered Stages or Steps (`## Step 0` only in `embed_planning-embedded-topics`) → `## Common Mistakes`.
 3. `## Common Mistakes` is a mirror of the rules above it — every hard rule and skipped-step failure in the body gets a corresponding bullet. Keep them in sync when adding a rule.
 4. Harden a rule that Claude will be tempted to rationalize past with a `| Rationalization | Reality |` table (see `embed_planning-embedded-topics` Stage 1).
