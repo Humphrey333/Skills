@@ -45,7 +45,7 @@ Tell the developer the file's path and that a new session can be pointed at `HAN
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
 - Vague/generic sections that could describe any project.
 - Omitting failed approaches (survivorship bias) — the next session needs to know what *not* to retry.
 - Next steps phrased as goals ("finish the feature") instead of concrete actions.

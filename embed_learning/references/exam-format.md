@@ -1,13 +1,15 @@
-# Exam Format (F3)
+# Exam Format (F3, paste flow)
 
-An exam is two local files in `<topic-dir>`:
+This format is for exams that `learn.py` does not run: a **book chapter** (`<book-slug>_ch<M>`) or a **review of a passed path day** (`day<N>_review<k>`). Path-day exams and their retakes use the question bank and `learn.py` instead: see `bank-format.md`.
+
+A paste-flow exam is two local files in `<topic-dir>`:
 
 | File | Who reads it | Contains |
 |---|---|---|
 | `Exam_<source>.html` | the developer, in a browser | questions and the answer form only |
 | `Exam_<source>_key.md` | Claude, when grading | answers, why each trap is wrong, exact source locations |
 
-`<source>` is `day<N>` for a path day (`day6`, `day6_retake1`, `day6_retake2`; `day2_review1` for a review of a passed day), or `<book-slug>_ch<M>` for a book chapter.
+`<source>` is `<book-slug>_ch<M>` for a book chapter (`<book-slug>_ch<M>_retake<k>` for its retakes), or `day<N>_review<k>` for a review of a passed day.
 
 ## The HTML page
 
@@ -67,20 +69,10 @@ Start with the score `x / n` and the verdict `passed` or `not passed`; anything 
 3. A quote of the source passage, with its exact location.
 4. A re-teach: context first, then the point itself.
 
-Then propose the `Progress.md` update and, if the exam was not passed, the retake.
+Then, for a chapter exam that was not passed, offer the retake. For a review exam, propose adding the weak points to `Progress.md` under `## Review weak points`, below the table (a review never un-passes a day), and wait for a yes.
+
+The same output is used when the developer asks Claude to re-teach a failed `learn.py` attempt: read the wrong ids from `.learn/attempts.jsonl` and their `answer`, `source` and `why` from the bank.
 
 ## Progress.md
 
-```markdown
-# Progress — <topic-slug>
-
-Path: Path_<YYYY-MM-DD>.md · Level: base→medium | base→advanced
-
-| Day | Status | Attempts | Last score | Weak points (source location) |
-|---|---|---|---|---|
-| 1 | passed | 1 | 10/10 | — |
-| 2 | not passed | 2 | 9/10 | fixation vs negotiation (ch. 8.4, p. 151) |
-| 3 | locked | 0 | — | — |
-```
-
-`passed` only at 100%. The day after the first day that isn't passed stays `locked`.
+The `Progress.md` format is defined in `bank-format.md`. `learn.py` writes the table; Claude edits it only to add review-exam weak points, after a yes.

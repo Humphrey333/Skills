@@ -7,7 +7,7 @@ description: Use when the developer invokes /embed_summary to capture what was l
 
 ## Overview
 
-"Review the tape" after a working session: pull out the durable knowledge — insights, constraints that drove the design, pros/cons that were weighed, corrections to Claude's default approach, new preferences — and store it where the next conversation will find it. Output goes to the shared knowledge folder `~/.claude/Knowledge/<topic-slug>.md`, with a one-line entry in `~/.claude/Knowledge/INDEX.md`. Every `embed_*` skill reads `INDEX.md` as its first step, so the next session picks it up regardless of which project it runs in.
+"Review the tape" after a working session: pull out the durable knowledge — insights, constraints that drove the design, pros/cons that were weighed, corrections to Claude's default approach, new preferences — and store it where the next conversation will find it. Output goes to the shared knowledge folder `~/.agents/Knowledge/<topic-slug>.md`, with a one-line entry in `~/.agents/Knowledge/INDEX.md`. Every `embed_*` skill reads `INDEX.md` as its first step, so the next session picks it up regardless of which project it runs in.
 
 Core question: **"What did we learn in this session that's worth knowing next time?"**
 
@@ -19,7 +19,7 @@ Core question: **"What did we learn in this session that's worth knowing next ti
 
 ## Step 0 — Load Shared Knowledge (mandatory, do this first)
 
-Read `~/.claude/Knowledge/INDEX.md` and every topic file it lists that relates to this session. You need them to pick the right topic slug (Step 1) and to dedupe (Step 3). If `INDEX.md` doesn't exist yet, say so — it will be created in Step 5.
+Read `~/.agents/Knowledge/INDEX.md` and every topic file it lists that relates to this session. You need them to pick the right topic slug (Step 1) and to dedupe (Step 3). If `INDEX.md` doesn't exist yet, say so — it will be created in Step 5.
 
 ## Step 1 — Identify the Topic
 
@@ -48,7 +48,7 @@ Rules:
 
 ## Step 3 — Dedupe Against Existing Knowledge
 
-- Compare the harvest with the existing `~/.claude/Knowledge/<topic-slug>.md`.
+- Compare the harvest with the existing `~/.agents/Knowledge/<topic-slug>.md`.
 - Skip items already recorded; if an item refines an older one, propose updating the old entry instead of adding a duplicate.
 - If a new item **contradicts** an existing entry, flag it explicitly and ask which one is correct.
 
@@ -65,8 +65,8 @@ Also point out items that may belong somewhere else as well — suggestions only
 
 ## Step 5 — Write
 
-1. Create or update `~/.claude/Knowledge/<topic-slug>.md` using the template below; add a new dated `## Session YYYY-MM-DD` block and apply any confirmed updates to older entries.
-2. Add or refresh the topic's line in `~/.claude/Knowledge/INDEX.md` (create the file with a `# Embedded Knowledge Index` heading if missing). Keep it to one line per topic, with keywords other skills can match on:
+1. Create or update `~/.agents/Knowledge/<topic-slug>.md` using the template below; add a new dated `## Session YYYY-MM-DD` block and apply any confirmed updates to older entries.
+2. Add or refresh the topic's line in `~/.agents/Knowledge/INDEX.md` (create the file with a `# Embedded Knowledge Index` heading if missing). Keep it to one line per topic, with keywords other skills can match on:
    `- [<Topic title>](<topic-slug>.md) — <part numbers / board / subsystem>; <one-line hook>`
 3. Report the files written and the number of items added/updated.
 
@@ -106,12 +106,12 @@ Omit a category heading if it has no items for that session.
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
 - Writing to files before the developer confirms the proposed list.
 - Recording an assumption or inference as a confirmed fact.
 - Duplicating entries that already exist instead of updating them; silently overwriting a contradicting entry.
 - Dumping the conversation transcript instead of distilled, self-contained lines.
 - Vague document references ("the datasheet") without exact name, revision, and section/page.
 - Forgetting the `INDEX.md` entry (or writing vague keywords in it), so other `embed_*` skills never find the file.
-- Writing to a project-local `Knowledge/` folder instead of the shared `~/.claude/Knowledge/`.
+- Writing to a project-local `Knowledge/` folder instead of the shared `~/.agents/Knowledge/`.
 - Running the skill without being invoked.

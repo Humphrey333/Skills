@@ -25,10 +25,10 @@ These skills are prompt and workflow documents. There is nothing to build or tes
 The `embed_*` skills run in three steps. Each step needs your approval before the next one starts.
 
 1. Plan, debug, document or learn: `embed_planning-embedded-topics` for a new topic, `embed_debug` for a bug (it ends in a plan for the fix), `embed_document` for `README.md` and `BUILD.md`, `embed_learning` for a learning path, book companion and exams. After a plan is agreed, `embed_create_coding_template` can create the project skeleton.
-2. Write the code from the approved plan, one task per approval: `embed_executing_plans`, which uses `embed_programming`.
+2. Write the code from the approved plan, each change shown for a yes before it is written: `embed_executing_plans`, which uses `embed_programming`.
 3. Capture what was learned with `embed_summary`, then document what was done with `embed_document`.
 
-`embed_writing` is called by every skill whose output a person reads. It removes the signs of AI writing, cuts padding and deletes any sentence no source supports, and it never changes a command, number or feature status.
+`embed_writing` is called by every skill whose output a person reads. It replaces the signs of AI writing with plain words of the same meaning and removes nothing but chatbot leftovers. It never changes a fact, a reason, a command, a number or a feature status, and it flags doubtful sentences instead of deleting them.
 
 `handoff` and `half-clone` sit outside the chain and carry a session over to a new one. Four skills never self-trigger: `/embed_summary`, `/embed_document`, `/handoff`, `/half-clone`.
 
@@ -76,7 +76,7 @@ bash AgentMD/install.sh                    # all agents
 bash AgentMD/install.sh --agents claude    # only some
 ```
 
-Run it from a terminal. When a target file differs, the script asks whether to overwrite it; with no terminal it skips that file. An overwritten file is moved to `~/.agentmd-backup/<date-time>/`. Restart the agent session afterwards. Paths, the workflow table and the details are in [`AgentMD/README.md`](AgentMD/README.md). A single skill can still be copied by hand: `cp -r <skill-name> ~/.claude/skills/`.
+Run it from a terminal. When targets already exist and differ, the script lists them all and asks once whether to overwrite all or skip all; with no terminal it skips them. An overwritten file is replaced with no backup, so copy anything you want to keep first. Restart the agent session afterwards. Paths, the workflow table and the details are in [`AgentMD/README.md`](AgentMD/README.md). A single skill can still be copied by hand: `cp -r <skill-name> ~/.claude/skills/`.
 
 ### Usage
 
@@ -85,11 +85,11 @@ Run it from a terminal. When a target file differs, the script asks whether to o
 | `embed_planning-embedded-topics` | Starting a new bring-up, subsystem, board support or feature | auto | an existing bug → `embed_debug` |
 | `embed_create_coding_template` | A plan is agreed and you want the CMake skeleton on disk, or to refine `.clang-format`/`.clang-tidy` | auto | planning → `embed_planning-embedded-topics`; kernel modules, Yocto recipes, vendor patch projects |
 | `embed_debug` | A bug, crash, oops, hang or misconfiguration in embedded Linux code; you want to know where and why it breaks, explained point by point in plain words (no code), ending in a report | auto | new bring-up/feature → `embed_planning-embedded-topics`; learning → `embed_learning`; saving knowledge → `embed_summary`; code Claude can run and test directly |
-| `embed_executing_plans` | A plan from `embed_planning-embedded-topics` is approved and must be implemented, one task per approval (uses `embed_programming`) | auto | planning → `embed_planning-embedded-topics`; bugs → `embed_debug` |
+| `embed_executing_plans` | A plan from `embed_planning-embedded-topics` is approved and must be implemented, each code or document change shown for a yes first (uses `embed_programming`) | auto | planning → `embed_planning-embedded-topics`; bugs → `embed_debug` |
 | `embed_programming` | Writing or changing code: extensible structure for new code, smallest complete change for existing code | auto | planning, debugging, docs → their `embed_*` skill |
 | `embed_document` | You want `README.md` / `BUILD.md` to match Plans, code and build files | `/embed_document` | session knowledge → `embed_summary`; skeleton → `embed_create_coding_template` |
 | `embed_summary` | End of a session or milestone; capture what was learned | `/embed_summary` | plans → `embed_planning-embedded-topics`; bugs → `embed_debug` |
-| `embed_learning` | You want to learn a topic (7-day path + books), study a book you supply, or take/grade an exam | auto | implementing a topic → `embed_planning-embedded-topics`; bugs → `embed_debug` |
+| `embed_learning` | You want to learn a topic (7-day path + books, exams run with `python3 learn.py`; each topic folder gets a `README.md` from `templates/topic-README.md` explaining its files), study a book you supply, or take/grade an exam | auto | implementing a topic → `embed_planning-embedded-topics`; bugs → `embed_debug` |
 | `embed_writing` | A skill is about to show or write text a person reads, or you want a draft to read less like AI | called by the other skills, or on request | code → `embed_programming`; what a document contains → the skill that owns it |
 | `handoff` | End of a session; write `HANDOFF.md` for a fresh session | `/handoff` | continuing mid-dialogue → `half-clone` |
 | `half-clone` | A long conversation; write `HALF-CLONE.md` of the recent half | `/half-clone` | end-of-session summary → `handoff` |
@@ -98,7 +98,7 @@ Run it from a terminal. When a target file differs, the script asks whether to o
 
 ## Shared Knowledge Layer
 
-`~/.claude/Knowledge/` is the cross-project memory that ties the chain together. `embed_summary` writes one `<topic-slug>.md` per topic plus a one-line entry in `INDEX.md`. Every other `embed_*` skill reads `INDEX.md` first (Step 0) and opens the matching topic files. If a knowledge entry conflicts with what you say now, your current statement wins and the conflict is flagged for `/embed_summary`.
+`~/.agents/Knowledge/` is the cross-project memory that ties the chain together. `embed_summary` writes one `<topic-slug>.md` per topic plus a one-line entry in `INDEX.md`. `embed_planning-embedded-topics` reads `INDEX.md` first (Step 0) and opens the matching topic files; the other skills do not. The folder is shared by all agents; the installer creates it empty and never overwrites it. If a knowledge entry conflicts with what you say now, your current statement wins and the conflict is flagged for `/embed_summary`.
 
 **[Back to top](#table-of-contents)**
 

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning exam</title>
+<style>
+  :root { --bg:#fafaf7; --fg:#1d1d1b; --muted:#666; --card:#fff; --line:#ddd; --accent:#2b5fab; --warn:#a33; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#17181a; --fg:#e8e6e1; --muted:#9a9a9a; --card:#212327; --line:#3a3d42; --accent:#7aa7ec; --warn:#e88; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .meta { color:var(--muted); margin:0 0 16px; }
+  .rule { border-left:4px solid var(--accent); padding:8px 12px; background:var(--card); margin-bottom:24px; }
+  h2 { font-size:1.15rem; margin:32px 0 8px; border-bottom:1px solid var(--line); padding-bottom:4px; }
+  .q { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:14px 16px; margin:12px 0; }
+  .q p { margin:0 0 8px; }
+  .q label { display:block; padding:4px 0; cursor:pointer; }
+  pre.snippet { margin:0 0 10px; padding:10px 12px; overflow-x:auto; background:var(--bg); border:1px solid var(--line); border-radius:6px; font:.9em/1.45 ui-monospace, monospace; }
+  code { font-family:ui-monospace, monospace; font-size:.92em; overflow-wrap:anywhere; }
+  button { font:inherit; background:var(--accent); color:#fff; border:0; border-radius:6px; padding:10px 18px; cursor:pointer; margin-top:24px; }
+  button:disabled { opacity:.5; cursor:default; }
+  #msg { margin-top:16px; }
+  .err { color:var(--warn); }
+</style>
+</head>
+<body>
+<main>
+<h1 id="title">Loading the exam…</h1>
+<p class="meta" id="meta"></p>
+<div class="rule">Pass mark: 100%. Pick one option for every question, then press Submit. Your result appears in the terminal where you ran <code>learn.py</code>.</div>
+<form id="exam"></form>
+<button id="submit" type="button" disabled>Submit</button>
+<p id="msg"></p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var SECTION_NAMES = { basic: 'Basic', medium: 'Medium', traps: 'Traps' };
+  var form = document.getElementById('exam');
+  var btn = document.getElementById('submit');
+  var msg = document.getElementById('msg');
+  var questions = [];
+
+  // Text arrives as plain text; `backticks` mark code. Built with text nodes, never innerHTML.
+  function appendText(parent, text) {
+    text.split('`').forEach(function (part, i) {
+      if (i % 2 === 1) {
+        var c = document.createElement('code');
+        c.textContent = part;
+        parent.appendChild(c);
+      } else if (part) {
+        parent.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+
+  function showError(text) {
+    msg.className = 'err';
+    msg.textContent = text;
+  }
+
+  function render(data) {
+    document.title = 'Day ' + data.day + ' exam';
+    document.getElementById('title').textContent = 'Day ' + data.day + ': ' + data.title;
+    document.getElementById('meta').textContent = data.topic + ' · Attempt ' + data.attempt;
+    questions = data.questions;
+    var current = null;
+    questions.forEach(function (q) {
+      if (q.section !== current) {
+        current = q.section;
+        var h = document.createElement('h2');
+        h.textContent = SECTION_NAMES[q.section] || q.section;
+        form.appendChild(h);
+      }
+      var box = document.createElement('div');
+      box.className = 'q';
+      var p = document.createElement('p');
+      var b = document.createElement('b');
+      b.textContent = q.n + '. ';
+      p.appendChild(b);
+      appendText(p, q.text);
+      box.appendChild(p);
+      if (q.code) {
+        var pre = document.createElement('pre');
+        pre.className = 'snippet';
+        pre.textContent = q.code;
+        box.appendChild(pre);
+      }
+      ['A', 'B', 'C', 'D'].forEach(function (letter) {
+        var label = document.createElement('label');
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = q.n;
+        input.value = letter;
+        label.appendChild(input);
+        appendText(label, ' ' + letter + '. ' + q.options[letter]);
+        box.appendChild(label);
+      });
+      form.appendChild(box);
+    });
+    btn.disabled = false;
+  }
+
+  function collect() {
+    var picks = {};
+    questions.forEach(function (q) {
+      var c = form.querySelector('input[name="' + q.n + '"]:checked');
+      if (c) { picks[q.n] = c.value; }
+    });
+    return picks;
+  }
+
+  btn.addEventListener('click', function () {
+    var picks = collect();
+    var missing = questions.length - Object.keys(picks).length;
+    if (missing > 0 && !window.confirm(missing + ' question(s) have no option picked and will count as wrong. Submit anyway?')) {
+      return;
+    }
+    btn.disabled = true;
+    fetch('submit' + location.search, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(picks)
+    }).then(function (r) {
+      if (!r.ok) { throw new Error('the script refused the submission (HTTP ' + r.status + ')'); }
+      form.querySelectorAll('input').forEach(function (i) { i.disabled = true; });
+      msg.className = '';
+      msg.textContent = 'Submitted. See the terminal for your result. You can close this tab.';
+    }).catch(function (e) {
+      btn.disabled = false;
+      showError('Could not submit: ' + e.message + '. Is learn.py still running?');
+    });
+  });
+
+  fetch('exam.json' + location.search).then(function (r) {
+    if (!r.ok) { throw new Error('HTTP ' + r.status); }
+    return r.json();
+  }).then(render).catch(function (e) {
+    document.getElementById('title').textContent = 'Exam not available';
+    showError('Could not load the questions (' + e.message + '). Start the exam with: python3 learn.py');
+  });
+})();
+</script>
+</body>
+</html>

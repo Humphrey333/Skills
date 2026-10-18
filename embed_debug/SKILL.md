@@ -1,6 +1,6 @@
 ---
 name: embed_debug
-description: Use when a developer reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons) and wants to know where and why it breaks, especially when the report is incomplete or platform documentation is needed. Not for: a new bring-up or feature (use embed_planning-embedded-topics), learning a topic (use embed_learning), saving session knowledge (use embed_summary), or applying a fix (use embed_planning-embedded-topics, then embed_executing_plans).
+description: Use when a developer reports a bug, crash, kernel panic/oops, hang, or misconfiguration (e.g. a misbehaving camera sensor) in embedded Linux code or configuration (drivers, bootloader, device-tree/sensor settings, userspace daemons) and wants to know where and why it breaks, especially when the report is incomplete or platform documentation is needed, or when fixes from an earlier debug report failed on the board. Not for: a new bring-up or feature (use embed_planning-embedded-topics), learning a topic (use embed_learning), saving session knowledge (use embed_summary), or applying a fix (use embed_planning-embedded-topics, then embed_executing_plans).
 ---
 
 # Embedded Debugging
@@ -14,6 +14,7 @@ Find the exact place, or places, in the code that cause the symptom the develope
 ## When to Use
 
 - Bug reports, crashes, kernel oops/panics, hangs, misbehaving peripherals (e.g. a camera sensor module like Sony IMX586 producing bad frames), or misconfiguration in embedded Linux code or configuration (kernel drivers, bootloader, device-tree/sensor settings, userspace daemons).
+- Re-entry: the solutions from an earlier `Debug_*.md` report were tested on the board and did not fix the bug.
 - Not for: a new bring-up, subsystem or feature (use `embed_planning-embedded-topics`); learning a topic (use `embed_learning`); saving session knowledge (use `embed_summary`); bugs in code Claude can directly execute/test (e.g. a hosted app with a runnable test suite), where normal debugging applies.
 
 ## Hard Rules
@@ -44,19 +45,12 @@ Red flags: stop and rewrite the message if it contains any of these:
 - more than one point
 - an unrelated bug before the *also noticed* stage
 
-## Step 0 — Load Shared Knowledge (mandatory, do this first)
-
-Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
-
-- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
-- Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
-- Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
-- If `INDEX.md` doesn't exist or nothing matches, say so and continue.
-
 ## Stage 1 — Understand (ask before pointing at anything)
 
+**Re-entry after failed solutions.** If the developer says the solutions from an earlier `Debug_<bug-slug>_<date>.md` did not fix the bug on the board, read that report first (and the fix plan's `## Board results`, if the developer points to it). Show every point and solution already tried, each with its board result. Then run the info gate below again: ask about the symptom now, new logs or error output, what changed, and any document that could settle it. New points must differ from the tried ones; a tried point comes back only with new evidence.
+
 1. **Scan the code.** Get the overall structure first, then the code path behind the symptom: error string, function, probe path, IRQ/register, device-tree node/property, sensor mode/register table.
-2. **Run the info gate** against the developer's report. Items already covered by loaded knowledge are not asked again.
+2. **Run the info gate** against the developer's report.
    - **Context**: what the system/component is supposed to do
    - **Code/file references**: relevant files, functions, or subsystem
    - **Exact error output**: verbatim (oops/panic trace, log lines, error codes), not paraphrased
@@ -133,6 +127,7 @@ The developer discusses how to apply each solution. Update it until they agree. 
    - **Points**, in the template, each with its outcome: confirmed / rejected and why / open
    - **Agreed solutions**, in the template
    - **Also noticed**
+   - **Tried solutions and results**: each solution tested on the board and what the developer saw (carried over on re-entry; "none yet" on a first run)
    - **Open questions**
 2. Propose the name `Debug_<bug-slug>_<YYYY-MM-DD>.md`, written in the **directory the skill was invoked from** (the current working directory, not `Plans/`). Ask once: *"Do you agree with this report and its name?"*
 3. Write it **only on an explicit yes**. A correction or a "no" means fix it, show it again and ask again. Silence or "whatever" is not a yes. Tell the developer the path once written.
@@ -140,8 +135,7 @@ The developer discusses how to apply each solution. Update it until they agree. 
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
-- Skipping Step 0, so facts, documents or ruled-out causes already recorded in `~/.claude/Knowledge/` get asked for again.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
 - Pointing at a cause before the Stage 1 questions are answered.
 - Assuming, or stating an assumption as a caveat, instead of asking.
 - Writing any code: a patch, a diff, a debug print, a test script, or a changed value. Also editing a source file. This holds even when the developer is in a hurry or asks for it.
@@ -154,4 +148,5 @@ The developer discusses how to apply each solution. Update it until they agree. 
 - Writing the report without an explicit yes, under another name, or outside the invocation directory.
 - Ending without offering the fix-planning step, or starting it (or any fix) without the developer's yes.
 - Asking generic follow-ups ("more info?") instead of specific narrowing questions.
+- On re-entry: skipping the tried-solutions list, or bringing back a tried point without new evidence.
 - Trying to run or reproduce the bug yourself, instead of giving the developer a check to run.

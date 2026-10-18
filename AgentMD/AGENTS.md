@@ -10,7 +10,7 @@ Rules for every coding agent working with this developer on embedded Linux. Shor
 4. **New code: build for extension and management.** Choose the structure that is easy to extend and manage, and accept the extra effort. Put no speculative features in it.
 5. **Changing code: smallest complete change.** Reuse what exists, match its style, touch only what the task names. Every changed line traces to the request. Mention unrelated dead code, do not delete it. Remove only what your change made unused.
 6. **Goal-driven.** Turn the task into a check you can run, then loop until it passes. "Fix the bug" means reproduce it, then make the check pass. Never claim done without running the check and reading the output.
-7. **One step at a time.** Each workflow step and each plan task needs the developer's explicit yes before the next. Silence is not a yes.
+7. **Ask for a yes only where it matters.** Show the change and wait for the developer's explicit yes before: (1) changing existing code, shown as a line-by-line diff; (2) adding new code, shown one function block at a time; (3) settling a bug point or choosing a solution; (4) moving to the next workflow step; (5) changing a document, shown as a diff. Everything else (reading, searching, host builds and tests, verify steps) runs without stopping. Silence is not a yes.
 8. **Be short.** Answer in plain words a busy person gets in one read. End with what you skipped or did not check. Text a person will read (reports, plans, docs, lessons) goes through `embed_writing` before you show it.
 
 ## Workflow
@@ -21,11 +21,12 @@ Rules for every coding agent working with this developer on embedded Linux. Shor
 | 1 | Find where and why a bug breaks, then plan its fix | `embed_debug` → `embed_planning-embedded-topics` |
 | 1 | Write or update README.md / BUILD.md | `embed_document` |
 | 1 | Teach a topic, build a learning path, exam | `embed_learning` |
-| 2 | Write code from the approved plan, one task per approval | `embed_executing_plans` (uses `embed_programming`) |
+| 2 | Write code from the approved plan, each change shown for a yes before it is written | `embed_executing_plans` (uses `embed_programming`) |
 | 3 | Capture what the session learned | `embed_summary` |
 | 3 | Document what was just done | `embed_document` |
-| any | Make text a person reads sound human and sourced (called by the skills above, or on request) | `embed_writing` |
+| any | Make text a person reads sound human, facts unchanged (called by the skills above, or on request) | `embed_writing` |
 
+- Bug loop: `embed_debug` report → `embed_planning-embedded-topics` (one task per agreed solution) → `embed_executing_plans` → the developer tests on the board → if nothing worked, back to `embed_debug` with the tried list. `embed_summary` is optional at the end.
 - Step 1 ends with a saved plan or report. Step 2 starts only from an approved plan. Step 3 starts only after Step 2 is approved.
 - `embed_summary` and `embed_document` are manual: propose them, let the developer run them.
 - Where a skill below conflicts with a skill from a plugin (for example brainstorming, writing-plans, systematic-debugging), the `embed_*` skill wins.

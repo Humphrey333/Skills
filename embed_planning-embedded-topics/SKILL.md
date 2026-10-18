@@ -17,12 +17,24 @@ A new embedded topic goes through three stages, in strict order: research (facts
 
 ## Step 0 — Load Shared Knowledge (mandatory, do this first)
 
-Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
+Before anything else, read `~/.agents/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
 
-- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
+- Open every topic file in `~/.agents/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
 - Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
 - Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
 - If `INDEX.md` doesn't exist or nothing matches, say so and continue.
+
+## Bug-fix mode (input is a `Debug_*.md` report)
+
+When the developer brings an `embed_debug` report, the report replaces the broad research of Stage 1:
+
+1. Read the report. Its confirmed points and agreed solutions are the starting facts. Do not re-research the bug.
+2. For each solution, name any document the fix needs (exact title, or search segments) and wait for the developer to supply it. Never search or fetch it yourself.
+3. Agree the fix for each solution with the developer. When a solution has several ways to apply it, give the trade-offs and let the developer choose (Stage 2 Step 1).
+4. Write one task per solution. `Do` is the smallest fix in words, following `embed_programming` (reuse what exists, fix the root cause, reach every caller). `Verify` is `developer builds and runs on the board: <expected result from the report>`.
+5. Add an empty `## Board results` section at the end of the plan; `embed_executing_plans` fills it.
+
+Then continue with Stage 2 Step 3 (recap, approval, save) and Stage 3.
 
 ## Stage 1 — Research (facts and trade-offs only — no code)
 
@@ -80,7 +92,7 @@ Once the step-by-step plan is settled, do not move on silently:
 
 The skill ends here. It writes no code, README or build instructions.
 
-- Tell the developer the plan is ready to run with `embed_executing_plans`, which does one task per approval and uses `embed_programming` for the code.
+- Tell the developer the plan is ready to run with `embed_executing_plans`, which shows each code or document change for a yes before writing it and uses `embed_programming` for the code.
 - If the plan is for a new C/C++ userspace project, mention that `embed_create_coding_template` can create the skeleton first (as the plan's first task, if the developer wants it).
 - Wait for the developer to start the next skill. Do not start it yourself.
 
@@ -90,8 +102,8 @@ The stored doc is `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current direc
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
-- Skipping Step 0 — re-researching or re-asking what's already recorded in `~/.claude/Knowledge/`, or re-proposing an option a prior session already rejected.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
+- Skipping Step 0 — re-researching or re-asking what's already recorded in `~/.agents/Knowledge/`, or re-proposing an option a prior session already rejected.
 - Generating pseudocode or code at any stage — this skill plans only; code belongs to `embed_executing_plans`.
 - Skipping the pros/cons/trade-offs comparison in Stage 1 because one option "obviously" wins.
 - Picking the direction for the developer instead of asking in Stage 2 Step 1.
@@ -101,5 +113,6 @@ The stored doc is `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current direc
 - Writing plan steps without concrete, actionable instructions for whoever implements them.
 - Ending the plan without the `## Tasks` checklist (Files / Do / Verify per task), so `embed_executing_plans` has nothing to run.
 - Writing the README or build instructions here, or starting `embed_executing_plans` without the developer asking.
+- In bug-fix mode: re-researching the bug instead of starting from the report, or writing a fix task whose `Verify` is not a board check by the developer.
 - Guessing at missing information or fetching a platform document yourself instead of asking (Stage 1 hard rule).
 - Filling any undeclared point — a detail, default, or inference — with an assumption instead of stopping to ask, or stating the assumption as a caveat instead of getting explicit confirmation.

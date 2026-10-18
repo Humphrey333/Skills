@@ -15,22 +15,24 @@ Write the least code that fully solves the task. New code gets a structure that 
 - Loaded by `embed_executing_plans` before its first task.
 - Not for: planning (use `embed_planning-embedded-topics`), reading code to find a bug (use `embed_debug`), writing docs (use `embed_document`).
 
-## Step 0 — Load Shared Knowledge (mandatory, do this first)
-
-Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
-
-- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
-- Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
-- Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
-- If `INDEX.md` doesn't exist or nothing matches, say so and continue.
-
 ## Before you write
 
 Read the task and the code it touches. List every place the change must reach: callers, tests, fixtures, config, exports. Check what it could break: data it would destroy or expose, callers that stop working. That is the scope. Extra features are not.
 
 If a fact is missing (a value, a pin, a timing, a behavior), ask. Never fill it in. Never fetch a platform document; name it and wait for the developer.
 
+## Show before writing
+
+The developer approves every change before it is written:
+
+- Modifying code: show the line-by-line diff of each file.
+- New code: show one function block (function, class or struct) per message, in order.
+
+Write it only after an explicit yes for that diff or block. A correction means revise and show it again.
+
 ## Writing new code
+
+For C or C++ code, read `references/cpp-embedded.md` first and follow it (ownership, constants, error checks, interrupt and real-time paths). The project's own style wins on a conflict; mention it.
 
 Pick the structure that is easy to extend and manage, and accept the extra effort it takes: clear module boundaries, one job per file, names that say the job, config in one place. Then write only what the task needs inside that structure. Structure is not speculation: no unused options, hooks or "for later" code.
 
@@ -61,7 +63,8 @@ End with one or two lines: what you skipped or did not check, and any risk the d
 
 ## Common Mistakes
 
-- Skipping Step 0.
+- Writing C or C++ without reading `references/cpp-embedded.md`: raw `new`/`delete`, `#define` constants, blocking or allocating in an interrupt path.
+- Writing code before the developer saw and approved it, or showing a whole new file at once.
 - Adding an option, wrapper, abstraction or dependency nobody asked for.
 - Writing new code with no structure, or old code with a rewrite, instead of the rule for its case.
 - Changing, reformatting or deleting code the task does not name.

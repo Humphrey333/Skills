@@ -17,15 +17,6 @@ Style: CLI-focused with a table of contents (from the awesome-readme list) — i
 - Manual only: never trigger this skill on your own, and never suggest running it in the middle of other work except as a one-line pointer at the end.
 - Not for: capturing decisions and trade-offs from a session (use `embed_summary`), creating the project skeleton and first-draft docs (use `embed_create_coding_template`), finding a bug (use `embed_debug`), writing the code (use `embed_executing_plans`), or session continuity (use `handoff` / `half-clone`). Other documents (CHANGELOG, ARCHITECTURE.md, `docs/design.md`) are out of scope.
 
-## Step 0 — Load Shared Knowledge (mandatory, do this first)
-
-Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
-
-- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
-- Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
-- Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
-- If `INDEX.md` doesn't exist or nothing matches, say so and continue.
-
 ## Step 1 — Gate: Unknowns
 
 Fixed by the invocation, not asked:
@@ -58,7 +49,6 @@ Read, in this order, and record each fact together with where it came from:
 2. Build and code — `CMakeLists.txt` (`find_package`, `pkg_check_modules`, options, install rules), `subprojects/` / `external/`, scripts under `tools/`, the entry points that define Usage.
 3. `git log` — hints for the suggested answer when asking about a planned feature's status; never a source of features on its own.
 4. The existing `README.md` / `BUILD.md`, if any — to preserve hand-written content that is still true.
-5. Knowledge files loaded in Step 0 — as hints only.
 
 **Feature status.** List every function/feature the plans mention. A plan never confirms that a function works, so ask the developer for the status of each — working, partly working, not working, or not started — batched into as few questions as possible, one option per feature. Put what code or `git log` suggests inside the question as a suggested answer. Only planned functions are checked: do not inventory the code for functions no plan lists. Other facts no source confirms: ask the developer, or leave a `TODO:` marker. Unknowables such as license, authors, CI badge URL and project home URL default to `TODO:` markers.
 
@@ -97,9 +87,8 @@ After writing: the files changed, remaining `TODO:` markers, and any statement y
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
 - Self-triggering, or starting without the developer invoking `/embed_document`.
-- Skipping Step 0 and re-asking what `~/.claude/Knowledge/` already records.
 - Writing documentation from memory of the conversation instead of from Plans, code and build files, with feature status from the developer.
 - Stating a fact (license, authors, status, a command, a dependency version) that no source confirmed instead of asking or leaving a `TODO:`.
 - Asking for the project root or mode (they are the invocation directory and both files), or assuming the target distro or any other unknown instead of asking; stating the assumption as a caveat instead of getting an answer.

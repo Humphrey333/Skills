@@ -55,12 +55,11 @@ for a in $agents; do
 done
 [ -f "$RULES_SRC/AGENTS.md" ] || { echo "missing $RULES_SRC/AGENTS.md" >&2; exit 1; }
 
-# Answers come from the original stdin; the rules loop below redirects its own.
-exec 3<&0
-
-n_inst=0 n_same=0 n_skip=0 n_bak=0
+n_inst=0 n_same=0 n_skip=0 n_over=0
 seen=""
-backup_root="$HOME/.agentmd-backup/$(date +%F-%H%M%S)"
+mode=scan      # scan: only collect what would be overwritten; apply: install
+overwrite=0    # set by the single question between the two passes
+conflicts=()
 
 # Skills are directories with a SKILL.md at the top. Dev-only files stay out of the copy.
 copy_dir() {
@@ -80,11 +79,13 @@ is_same() { # is_same <src> <dst>
   fi
 }
 
-# No answer (EOF, no terminal) means skip.
-ask_overwrite() {
+# One question for everything that differs. No answer (EOF, no terminal) means skip.
+ask_overwrite_all() {
   local ans
-  printf '%s differs. [o]verwrite (old one is backed up) / [s]kip? ' "$1" >&2
-  read -r ans <&3 || ans=s
+  echo "These ${#conflicts[@]} items already exist and differ:" >&2
+  printf '  %s\n' "${conflicts[@]}" >&2
+  printf '[o]verwrite all (no backup) / [s]kip all? ' >&2
+  read -r ans || ans=s
   [ "$ans" = o ]
 }
 
@@ -94,20 +95,23 @@ place() { # place <src> <dst>
   seen="$seen|$dst|"
   if [ -e "$dst" ] || [ -L "$dst" ]; then
     if is_same "$src" "$dst"; then
-      n_same=$((n_same + 1))
+      [ "$mode" = apply ] && n_same=$((n_same + 1))
       return 0
     fi
-    if ! ask_overwrite "$dst"; then
+    if [ "$mode" = scan ]; then
+      conflicts+=("$dst")
+      return 0
+    fi
+    if [ "$overwrite" -ne 1 ]; then
       echo "skip     $dst"
       n_skip=$((n_skip + 1))
       return 0
     fi
-    # Backups live outside the skills dirs so agents never load an old copy as a skill.
-    mkdir -p "$backup_root/$(dirname "${dst#"$HOME"/}")"
-    mv "$dst" "$backup_root/${dst#"$HOME"/}"
-    echo "backup   $dst -> $backup_root/${dst#"$HOME"/}"
-    n_bak=$((n_bak + 1))
+    # No backup: the developer keeps their own copy if they want one.
+    rm -rf "$dst"
+    n_over=$((n_over + 1))
   fi
+  [ "$mode" = apply ] || return 0
   mkdir -p "$(dirname "$dst")"
   if [ "$link" -eq 1 ]; then
     ln -s "$src" "$dst"
@@ -120,23 +124,45 @@ place() { # place <src> <dst>
   n_inst=$((n_inst + 1))
 }
 
+# Shared memory for every agent. Created once, never overwritten: agents write it.
+seed_index() { # seed_index <file> <heading>
+  [ -e "$1" ] && return 0
+  mkdir -p "$(dirname "$1")"
+  printf '# %s\n' "$2" >"$1"
+  echo "create   $1"
+  n_inst=$((n_inst + 1))
+}
+
 skills=()
 for d in "$SRC"/*/; do
   [ -f "${d}SKILL.md" ] && skills+=("${d%/}")
 done
 [ "${#skills[@]}" -gt 0 ] || { echo "no skills found in $SRC" >&2; exit 1; }
 
-for agent in $agents; do
-  echo "== $agent"
-  while IFS='|' read -r file dst; do
-    place "$RULES_SRC/$file" "$dst"
-  done < <(rules_for "$agent")
-  sdir=$(skills_dir_for "$agent")
-  for s in "${skills[@]}"; do
-    place "$s" "$sdir/$(basename "$s")"
+walk() {
+  seen=""
+  for agent in $agents; do
+    [ "$mode" = apply ] && echo "== $agent"
+    while IFS='|' read -r file dst; do
+      place "$RULES_SRC/$file" "$dst"
+    done < <(rules_for "$agent")
+    sdir=$(skills_dir_for "$agent")
+    for s in "${skills[@]}"; do
+      place "$s" "$sdir/$(basename "$s")"
+    done
   done
-done
+}
 
-echo "installed=$n_inst same=$n_same skipped=$n_skip backed_up=$n_bak"
-[ "$n_bak" -eq 0 ] || echo "backups are in $backup_root"
+mode=scan
+walk
+if [ "${#conflicts[@]}" -gt 0 ] && ask_overwrite_all; then
+  overwrite=1
+fi
+mode=apply
+walk
+
+seed_index "$HOME/.agents/Knowledge/INDEX.md" "Embedded Knowledge Index"
+seed_index "$HOME/.agents/Learning/INDEX.md" "Learning Topics"
+
+echo "installed=$n_inst same=$n_same skipped=$n_skip overwritten=$n_over"
 echo "Restart your agent sessions to load the changes."

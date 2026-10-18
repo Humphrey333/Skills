@@ -17,13 +17,13 @@ Each step needs the developer's explicit approval before the next. To swap a ski
 | Step | Task | Skill |
 |---|---|---|
 | 1 | Plan a new topic (bring-up, subsystem, board, feature) | `embed_planning-embedded-topics` |
-| 1 | Find where and why a bug breaks, then plan its fix | `embed_debug` → `embed_planning-embedded-topics` |
+| 1 | Find where and why a bug breaks, then plan its fix (if the board test fails, back to `embed_debug` with the tried list) | `embed_debug` → `embed_planning-embedded-topics` |
 | 1 | Write or update README.md / BUILD.md | `embed_document` |
 | 1 | Teach a topic, learning path, exam | `embed_learning` |
-| 2 | Write code from the approved plan, one task per approval | `embed_executing_plans` (uses `embed_programming`) |
+| 2 | Write code from the approved plan, each change shown for a yes before it is written | `embed_executing_plans` (uses `embed_programming`) |
 | 3 | Capture what the session learned | `embed_summary` |
 | 3 | Document what was just done | `embed_document` |
-| any | Make text a person reads sound human and sourced (called by the skills above, or on request) | `embed_writing` |
+| any | Make text a person reads sound human, facts unchanged (called by the skills above, or on request) | `embed_writing` |
 
 Also installed: `embed_create_coding_template` (project skeleton), `handoff`, `half-clone` (session continuity).
 
@@ -40,7 +40,7 @@ bash install.sh --agents claude,codex
 ```
 
 - Agents: `claude`, `codex`, `gemini`, `antigravity` (default: all).
-- If a target already exists and differs, the script asks per file: overwrite or skip. With no terminal it skips. An overwritten file or skill is moved to `~/.agentmd-backup/<date-time>/` (outside the skills folders, so no agent loads the old copy as a skill).
+- If a target already exists and differs, the script lists every such item first, then asks once: overwrite all or skip all. With no terminal it skips all. An overwritten file or skill is replaced with no backup, so copy anything you want to keep first.
 - Developer-only files (`Requi*`, `Plans*`) are never copied into the installed skills.
 - Restart your agent sessions afterwards.
 
@@ -53,7 +53,7 @@ bash install.sh --agents claude,codex
 | Gemini CLI | `~/.gemini/GEMINI.md` | `~/.agents/skills/` |
 | Antigravity | `~/.gemini/GEMINI.md` | `~/.gemini/config/skills/` |
 
-Gemini CLI and Antigravity share one `GEMINI.md`. The paths come from each agent's documentation and are one table at the top of `install.sh`. If an agent moves them, edit that table.
+The installer also creates `~/.agents/Knowledge/INDEX.md` and `~/.agents/Learning/INDEX.md` once, for every agent, and never overwrites them. Gemini CLI and Antigravity share one `GEMINI.md`. The paths come from each agent's documentation and are one table at the top of `install.sh`. If an agent moves them, edit that table.
 
 ## Changing a skill later
 

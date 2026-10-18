@@ -17,15 +17,6 @@ Core rule: **the template is the definition; the plan only fills it in.** Do not
 - The developer asks to improve the `.clang-format` / `.clang-tidy` of an existing project (see "Refining lint configs").
 - Not for: a topic that has no agreed plan yet (use `embed_planning-embedded-topics`), writing the plan's feature code (use `embed_executing_plans`; this skill only creates the skeleton), an existing bug (use `embed_debug`), or out-of-tree kernel modules, Yocto recipes, or patch-on-vendor-source projects — those are outside this template.
 
-## Step 0 — Load Shared Knowledge (mandatory, do this first)
-
-Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
-
-- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
-- Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
-- Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
-- If `INDEX.md` doesn't exist or nothing matches, say so and continue.
-
 ## Step 1 — Require the Agreed Plan
 
 Locate `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` for this topic. If there is none, or it has no chosen direction and plan steps, **stop** and tell the developer to finish `/embed_planning-embedded-topics` first. Do not scaffold from a verbal description.
@@ -103,7 +94,7 @@ When invoked on an existing project, read its `.clang-format` / `.clang-tidy`, d
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
 - Scaffolding without an agreed plan, or from a verbal description.
 - Assuming architecture, artefact kind, C++ standard, or license instead of asking.
 - Writing files before the developer confirms the proposed tree.

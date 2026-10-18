@@ -7,7 +7,7 @@ description: Use when an embedded-engineering plan (Plans/Plan_<slug>_<date>.md 
 
 ## Overview
 
-Run an approved plan one task at a time, in this session. After each task, show the result and its verification, then wait for the developer's explicit yes before the next task. The plan already did the thinking: follow it exactly, and ask when it is wrong or silent.
+Run an approved plan task by task, in this session. Every code or document change is shown to the developer and needs an explicit yes before it is written. Everything else runs without stopping. The plan already did the thinking: follow it exactly, and ask when it is wrong or silent.
 
 **Violating the letter of these rules is violating the spirit of them.**
 
@@ -16,18 +16,16 @@ Run an approved plan one task at a time, in this session. After each task, show 
 - A plan exists at `Plans/Plan_<slug>_<date>.md` with a `## Tasks` list, and the developer approved it.
 - Not for: a plan that is not approved or has no `## Tasks` (go back to `embed_planning-embedded-topics`); a bug with no plan yet (use `embed_debug`); docs only (use `embed_document`).
 
-## Step 0 — Load Shared Knowledge (mandatory, do this first)
-
-Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, maintained by `embed_summary`).
-
-- Open every topic file in `~/.claude/Knowledge/` whose entry matches the current request (part number, subsystem, board, feature) and apply what it records: constraints, prior decisions and trade-offs, key documents, corrections, preferences, open questions.
-- Tell the developer in one line which knowledge files you loaded, or that none matched — they can point you to one you missed.
-- Knowledge entries are previously confirmed facts, but if one conflicts with what the developer says now, the developer's current statement wins — flag the conflict so it can be corrected with `/embed_summary`.
-- If `INDEX.md` doesn't exist or nothing matches, say so and continue.
-
 ## Hard Rules
 
-1. **One task, then stop.** After a task, show what changed and the verification output, then wait for an explicit yes. Silence, "ok whatever" or your own judgment is not a yes.
+1. **Gate the changes, not the tasks.** An explicit yes is needed for exactly these, and nothing else:
+   1. changing existing code, shown as a line-by-line diff per file;
+   2. adding new code, shown one function block (function, class or struct) per message;
+   3. settling a bug point or choosing a solution;
+   4. moving to the next workflow step;
+   5. changing a document, shown as a diff.
+
+   Show the change before writing it. Silence, "ok whatever" or your own judgment is not a yes. Reading, searching, host builds and tests, ticking the plan and a task's verify step run without stopping. A failed verify stops and reports.
 2. **Follow the plan.** Do not add, skip, reorder or reshape tasks. If a task is wrong, impossible or silent on a needed detail, stop and ask. Do not rule on it yourself.
 3. **Ask, never assume.** A register value, pin, timing, path or behavior the plan and the developer did not give is asked for. A stated assumption is still an assumption.
 4. **Never fetch or download a document** (datasheet, TRM, errata, app note). Name the exact document, or give search segments, and wait for the developer to supply it.
@@ -36,20 +34,22 @@ Before anything else, read `~/.claude/Knowledge/INDEX.md` (one line per topic, m
 
 | Rationalization | Reality |
 |---|---|
-| "The next task is small, I'll just do it too" | One task per approval. The gate is the product. |
+| "This change is small, I'll write it and show it after" | Show it first. A yes after the fact is not approval. |
+| "I'll show the whole new file at once" | Modified code: a line-by-line diff. New code: one function block per message. |
+| "I'll ask before running the tests too" | Host builds, tests and verify steps run without stopping. Only the five gates wait. |
 | "The plan is wrong here, I'll do the right thing" | Stop and ask. A silent deviation is an unapproved change. |
 | "It should pass, the change was trivial" | "Should" is not evidence. Run the verify step and read it. |
 | "I'll fill in this value, it is the usual one" | A value nobody supplied is an assumption. Ask, or name the document. |
 | "Asking again slows things down" | A wrong task built on a guess costs the whole task again. |
 
-Red flags — stop: starting task N+1 without a yes for N; editing a file no task names; writing "assuming…"; a verify step you did not run.
+Red flags — stop: writing code or a doc before its yes; editing a file no task names; writing "assuming…"; a verify step you did not run.
 
 ## The Task Loop
 
 1. **Setup (once).** Read the plan and its `## Tasks`. Tick state lives in the plan: a task marked `- [x]` is done, so resume at the first `- [ ]`. Tell the developer which task you are starting. Load `embed_programming`.
-2. **Do the task.** Make exactly the change the task describes, in the files it names. When the check can run on the host, write it first and watch it fail, then make it pass.
+2. **Do the task.** Prepare exactly the change the task describes, in the files it names. Show it in the gate's form (Hard Rule 1) and write it only after the yes for that diff or block. When the check can run on the host, write it first and watch it fail, then make it pass.
 3. **Verify.** Run the task's `verify` step. Show the command and the real output.
-4. **Report and wait.** Use this shape, then ask *"Approve task N and go to task N+1?"*:
+4. **Report.** Use this shape, then go on to the next task. Stop only when the next task needs a gate, verify failed, or a hardware check is with the developer:
 
    ```
    Task N of M — <name>
@@ -60,28 +60,36 @@ Red flags — stop: starting task N+1 without a yes for N; editing a file no tas
 
    Pass the report's wording through `embed_writing`. Commands and their real output stay unchanged.
 
-5. **On an explicit yes,** tick the task `- [x]` in the plan file and take the next one. A correction means fix the task and show it again.
+5. **Tick** the task `- [x]` in the plan file once its verify passed (or the developer reported the hardware check). A correction means fix the task and show it again.
+
+## Board results (bug-fix plans)
+
+When the plan came from a `Debug_*.md` report (it has a `## Board results` section), each task's board check goes to the developer. Record every report there: solution, tested or not, worked or not, what the developer saw. When every solution is tested:
+
+- One worked: go to Finish.
+- None worked: show every point and solution tried, with its result, and propose going back to `embed_debug` with that list (its re-entry case). Do not look for new causes yourself.
 
 ## Finish
 
-After the last task is approved:
+After the last task is ticked:
 
 1. Read the whole diff once against the plan. Report anything the plan did not ask for, and anything a task left undone.
-2. Propose Step 3, and wait. Do not run them yourself: `/embed_summary` captures what was learned, `/embed_document` updates README.md and BUILD.md.
+2. Propose Step 3 (optional), and wait. Do not run them yourself: `/embed_summary` captures what was learned, `/embed_document` updates README.md and BUILD.md.
 
 ## Common Mistakes
 
-- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question.
-- Skipping Step 0, so facts already recorded in `~/.claude/Knowledge/` get asked again.
-- Starting the next task without an explicit yes, or batching several tasks into one report.
+- Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
+- Writing a code or document change before the developer's yes, or showing a whole file instead of a line-by-line diff or one function block at a time.
+- Stopping for a yes on reading, searching, a host build, a test or a verify step.
 - Deviating from the plan (adding, skipping, reordering, reshaping a task) instead of stopping to ask.
 - Assuming a missing value or fetching a platform document instead of asking.
 - Claiming a task done without running its verify step, or without reading the output.
 - Marking a hardware-only check as passed instead of handing it to the developer.
+- Not recording board results, or hunting for a new cause yourself when no solution worked instead of proposing `embed_debug` re-entry.
 - Writing code without loading `embed_programming`.
 - Running `/embed_summary` or `/embed_document` yourself instead of proposing them.
 - Forgetting to tick `- [x]` in the plan, so a resumed session redoes finished tasks.
 
 ---
 
-Derived from `executing-plans` in obra/superpowers (MIT License). Rewritten for the `embed_*` chain: per-task approval gate, no subagents, worktrees or ledger scripts.
+Derived from `executing-plans` in obra/superpowers (MIT License). Rewritten for the `embed_*` chain: per-change approval gate, no subagents, worktrees or ledger scripts.
