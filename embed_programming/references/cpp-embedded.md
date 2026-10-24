@@ -34,6 +34,7 @@ Sources: C++ Core Guidelines (CppCoreGuidelines, `R`, `ES`, `CP`, `E`, `Enum`, `
 
 ## Style and checks
 
+- Every new or changed function has the header comment from `embed_programming` (purpose, in / out, how it works): Doxygen in userspace C/C++, kernel-doc in kernel code (`Documentation/doc-guide/kernel-doc.rst`).
 - Kernel code follows kernel coding style and passes `scripts/checkpatch.pl`.
 - Userspace C++ follows the project's `.clang-format` and `.clang-tidy` (the `embed_create_coding_template` configs if the project came from it).
 - Host builds of new or changed code run once under AddressSanitizer and UndefinedBehaviorSanitizer (`-fsanitize=address,undefined`), or `valgrind --leak-check=full`, when the code can run on the host. A leak or UB report is a failed verify.

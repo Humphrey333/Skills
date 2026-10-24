@@ -58,7 +58,7 @@ The first line lets the grader find the right key file without asking.
 | Q7 | traps | D | *<book>*, ch. 8.4, p. 151 | B is the common misconception "…" |
 ```
 
-Every row needs a source location from the supplied material, or the URL of an approved search. A question that can't be located gets rewritten or dropped. Never leave the location blank and never fill it from memory.
+Every row needs a source location from the supplied material, or the URL of an online page that was read. A question that can't be located gets rewritten or dropped. Never leave the location blank and never fill it from memory.
 
 ## Grading output
 

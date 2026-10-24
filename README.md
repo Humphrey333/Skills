@@ -25,7 +25,7 @@ These skills are prompt and workflow documents. There is nothing to build or tes
 The `embed_*` skills run in three steps. Each step needs your approval before the next one starts.
 
 1. Plan, debug, document or learn: `embed_planning-embedded-topics` for a new topic, `embed_debug` for a bug (it ends in a plan for the fix), `embed_document` for `README.md` and `BUILD.md`, `embed_learning` for a learning path, book companion and exams. After a plan is agreed, `embed_create_coding_template` can create the project skeleton.
-2. Write the code from the approved plan, each change shown for a yes before it is written: `embed_executing_plans`, which uses `embed_programming`.
+2. Write the code from the approved plan's todo list on a branch from `dev`, one commit per todo (`embed_executing_plans`, which uses `embed_programming`). Then `embed_programming_discussion` pushes it as the Gitea user `Agent` and opens a pull request into `dev` in your local Gitea (`http://localhost:3000`). You comment, request changes or merge there, and the agent fixes what you ask and replies. New projects get their Gitea repo, with `main` for releases and `dev` for work, from `embed_create_coding_template` through the same skill.
 3. Capture what was learned with `embed_summary`, then document what was done with `embed_document`.
 
 `embed_writing` is called by every skill whose output a person reads. It replaces the signs of AI writing with plain words of the same meaning and removes nothing but chatbot leftovers. It never changes a fact, a reason, a command, a number or a feature status, and it flags doubtful sentences instead of deleting them.
@@ -44,6 +44,7 @@ The `embed_*` skills run in three steps. Each step needs your approval before th
 | `embed_document` | TODO: verify |
 | `embed_create_coding_template` | TODO: verify |
 | `embed_programming` | TODO: verify |
+| `embed_programming_discussion` | TODO: verify |
 | `embed_summary` | TODO: verify |
 | `embed_learning` | TODO: verify |
 | `embed_writing` | TODO: verify (tested on 3 sample drafts only) |
@@ -83,10 +84,11 @@ Run it from a terminal. When targets already exist and differ, the script lists 
 | Skill | Use it when | Trigger | Not for |
 |---|---|---|---|
 | `embed_planning-embedded-topics` | Starting a new bring-up, subsystem, board support or feature | auto | an existing bug → `embed_debug` |
-| `embed_create_coding_template` | A plan is agreed and you want the CMake skeleton on disk, or to refine `.clang-format`/`.clang-tidy` | auto | planning → `embed_planning-embedded-topics`; kernel modules, Yocto recipes, vendor patch projects |
+| `embed_create_coding_template` | A plan is agreed and you want the CMake skeleton on disk and pushed to the local Gitea (`main` + `dev`), or to refine `.clang-format`/`.clang-tidy` | auto | planning → `embed_planning-embedded-topics`; kernel modules, Yocto recipes, vendor patch projects |
 | `embed_debug` | A bug, crash, oops, hang or misconfiguration in embedded Linux code; you want to know where and why it breaks, explained point by point in plain words (no code), ending in a report | auto | new bring-up/feature → `embed_planning-embedded-topics`; learning → `embed_learning`; saving knowledge → `embed_summary`; code Claude can run and test directly |
-| `embed_executing_plans` | A plan from `embed_planning-embedded-topics` is approved and must be implemented, each code or document change shown for a yes first (uses `embed_programming`) | auto | planning → `embed_planning-embedded-topics`; bugs → `embed_debug` |
+| `embed_executing_plans` | A plan from `embed_planning-embedded-topics` is approved and must be implemented on a branch from `dev` and opened as a Gitea pull request, or you reviewed or merged that pull request (uses `embed_programming`) | auto | planning → `embed_planning-embedded-topics`; bugs → `embed_debug` |
 | `embed_programming` | Writing or changing code: extensible structure for new code, smallest complete change for existing code | auto | planning, debugging, docs → their `embed_*` skill |
+| `embed_programming_discussion` | A new project needs its Gitea repo, a finished branch must be pushed and opened as a pull request into `dev`, or you reviewed or merged that pull request (works as the Gitea user `Agent`) | called by `embed_create_coding_template` / `embed_executing_plans`, auto on review or merge | writing code → `embed_programming`; running a plan → `embed_executing_plans` |
 | `embed_document` | You want `README.md` / `BUILD.md` to match Plans, code and build files | `/embed_document` | session knowledge → `embed_summary`; skeleton → `embed_create_coding_template` |
 | `embed_summary` | End of a session or milestone; capture what was learned | `/embed_summary` | plans → `embed_planning-embedded-topics`; bugs → `embed_debug` |
 | `embed_learning` | You want to learn a topic (7-day path + books, exams run with `python3 learn.py`; each topic folder gets a `README.md` from `templates/topic-README.md` explaining its files), study a book you supply, or take/grade an exam | auto | implementing a topic → `embed_planning-embedded-topics`; bugs → `embed_debug` |

@@ -12,23 +12,40 @@ Write the least code that fully solves the task. New code gets a structure that 
 ## When to Use
 
 - Any code change: new file or module, bug fix, refactor, adding a dependency.
-- Loaded by `embed_executing_plans` before its first task.
+- Loaded by `embed_executing_plans` before its first todo.
 - Not for: planning (use `embed_planning-embedded-topics`), reading code to find a bug (use `embed_debug`), writing docs (use `embed_document`).
 
 ## Before you write
 
 Read the task and the code it touches. List every place the change must reach: callers, tests, fixtures, config, exports. Check what it could break: data it would destroy or expose, callers that stop working. That is the scope. Extra features are not.
 
-If a fact is missing (a value, a pin, a timing, a behavior), ask. Never fill it in. Never fetch a platform document; name it and wait for the developer.
+If a fact is missing (a value, a pin, a timing, a behavior), ask. Never fill it in. Prefer reading documents online, without asking, and cite the URL; only a document that can't be read online goes into `Docs/REQUIRED_DOCS.md`, and the developer downloads it by hand.
 
-## Show before writing
+## Function header comments
 
-The developer approves every change before it is written:
+Every function you write or change gets a header comment with three parts, so a reviewer understands it from the Gitea pull request alone:
 
-- Modifying code: show the line-by-line diff of each file.
-- New code: show one function block (function, class or struct) per message, in order.
+1. **Purpose**: one short line on what the function is for.
+2. **In / out**: each parameter, the return value and any error or side effect (a register written, memory owned or released).
+3. **How it works**: a few lines on the method: the order of steps, the protocol or register sequence, why it is done this way.
 
-Write it only after an explicit yes for that diff or block. A correction means revise and show it again.
+C and C++ use Doxygen:
+
+```c
+/**
+ * @brief  Read the sensor chip ID over I2C.
+ * @param  client  I2C client of the sensor; must be powered and out of reset.
+ * @param  id      out: the 16-bit chip ID.
+ * @return 0 on success, a negative errno on a bus error.
+ *
+ * How it works: reads the two ID registers high byte first, because the
+ * sensor latches the low byte on the high-byte read.
+ */
+```
+
+Linux kernel code uses kernel-doc (`/** name() - purpose`, `@arg:` lines, `Return:`) with the same three parts. Python uses a docstring, and other languages their own doc-comment form. When changing a function that has no header, add one. When its behavior changes, update the header in the same commit.
+
+Inside the body, comment only the why the code cannot show: a register meaning, a timing constraint, why an order matters.
 
 ## Writing new code
 
@@ -53,7 +70,6 @@ Take the first option that fully works:
 - Remove only what your change made unused.
 - New non-trivial logic (a branch, a loop, a parser, a protocol step) leaves one small test or assert-based self-check.
 - A shortcut with a known limit gets one comment: `shortcut: <the limit>, <when to upgrade>`.
-- Comment only the why the code cannot show: a register meaning, a timing constraint, why an order matters.
 
 **Never cut:** validation at trust boundaries, error handling that prevents data loss, security, the calibration real hardware needs, anything the developer asked for.
 
@@ -64,14 +80,14 @@ End with one or two lines: what you skipped or did not check, and any risk the d
 ## Common Mistakes
 
 - Writing C or C++ without reading `references/cpp-embedded.md`: raw `new`/`delete`, `#define` constants, blocking or allocating in an interrupt path.
-- Writing code before the developer saw and approved it, or showing a whole new file at once.
+- A new or changed function without its header comment (purpose, in / out, how it works), or a header left stale after the behavior changed.
 - Adding an option, wrapper, abstraction or dependency nobody asked for.
 - Writing new code with no structure, or old code with a rewrite, instead of the rule for its case.
 - Changing, reformatting or deleting code the task does not name.
 - Fixing a bug in one caller without grepping the others.
 - Dropping validation or error handling when moving code.
-- Guessing a register value, pin or timing, or fetching a datasheet instead of asking.
-- Comments that restate the code instead of explaining the non-obvious why.
+- Guessing a register value, pin or timing, downloading a datasheet, or using an online fact without its URL.
+- Body comments that restate the code instead of explaining the non-obvious why.
 - New non-trivial logic with no test or self-check.
 - A reply that hides what was skipped or what is risky.
 

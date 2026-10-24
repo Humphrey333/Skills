@@ -21,9 +21,9 @@ Find the exact place, or places, in the code that cause the symptom the develope
 
 These hold in every stage, including when the developer is in a hurry.
 
-1. **No code, no fix.** Write no patch, diff, code snippet, printk/debug line, changed value, repro program or script, and edit no source file. You may point at `file:line` and quote up to 2 *existing* lines that are wrong. The only file this skill writes is the report (Stage 4). If the developer asks for code or a patch, say that this skill stops at the agreed solution in words, and that the report is the input for doing the fix afterwards.
+1. **No code, no fix.** Write no patch, diff, code snippet, printk/debug line, changed value, repro program or script, and edit no source file. You may point at `file:line` and quote up to 2 *existing* lines that are wrong. The only files this skill writes are the report (Stage 4) and `Docs/REQUIRED_DOCS.md`. If the developer asks for code or a patch, say that this skill stops at the agreed solution in words, and that the report is the input for doing the fix afterwards.
 2. **Ask, never assume.** If a fact the analysis depends on was not stated or supplied, ask, and wait for the answer. This covers requirements, hardware details, a register value, timing, an expected behavior, and a document. A guess from the code is a *suggested answer* inside the question, never a conclusion. "I'll assume X unless told otherwise" is still an assumption.
-3. **Never fetch or download a document yourself** (datasheet, TRM, errata, app note). Name the exact document, or give search segments, then stop and wait for the developer to supply it (Stage 2).
+3. **Read online, never download.** Prefer reading online: search for and read a document (datasheet page, TRM section, errata, app note) without asking, and cite the URL for each fact you use. Never download a file; downloads are done by the developer by hand. Only a document that can't be read online goes into `Docs/REQUIRED_DOCS.md` in the project folder, one row per document: Document, Revision, Why needed, Search terms, Status (`needed`, then `supplied: Docs/<file>` or `not found (developer)`); then stop and wait for the developer to supply it (Stage 2).
 4. **One point per message, in the template.** Each point and each solution uses the fixed template below, in short plain words. Then wait for the developer before moving on.
 5. **Stay on the reported symptom.** Suspicious code that does not explain the reported symptom goes on the *also noticed* list. It gets no explanation until every reported point has been covered and the developer asks for the list.
 
@@ -32,10 +32,12 @@ These hold in every stage, including when the developer is in a hurry.
 | "A one-line diff is clearer than words" | Say what to change and where in words. Code is out of scope for this skill. |
 | "The developer asked for the patch / is in a hurry" | Give the cause and the solution in words, one point at a time. Hurry is when a wrong guess costs most. |
 | "It's only a debug print / test script, not a fix" | Still code. Describe what to check and what result to look for. |
-| "Raising the timeout to N is a safe guess" | N is invented. Name the document the real value comes from and wait. |
-| "I can work out the rate/clock myself" | A number nobody supplied is an assumption. Ask, or name the document. |
+| "Raising the timeout to N is a safe guess" | N is invented. Read the value online with its URL, or list the document in `Docs/REQUIRED_DOCS.md` and wait. |
+| "The PDF is right there, I'll just download it" | Read it online if you can. A download goes into `Docs/REQUIRED_DOCS.md` for the developer. |
+| "I can work out the rate/clock myself" | A number nobody supplied or cited is an assumption. Ask, read it online with its URL, or list the document. |
 | "Listing every bug at once saves time" | The developer can't check five points at once. One point, then wait. |
 | "Those cleanup bugs are real, I should mention them" | Put them on the *also noticed* list and offer it at the end. |
+| "They didn't answer that one, I'll work without it" | Ask again until they answer or say they can't find it. Only then note the gap and go on. |
 
 Red flags: stop and rewrite the message if it contains any of these:
 - a ```` ``` ```` block with new code
@@ -59,7 +61,8 @@ Red flags: stop and rewrite the message if it contains any of these:
    - **Verification**: how a point can be checked (a log line, a register read, a test)
    - **Focus**: anything the developer wants looked at or left out
 3. **Mental-model check.** Ask what the code is *supposed* to do at the failure point. The gap between that and what it does is often the bug.
-4. **Ask for everything missing in one message**: facts, files, documents. You may offer a suggested answer from the code inside each question. Do not present any point until the answers are in. If the developer explicitly says to go on without an item, note the gap and continue.
+4. **Ask for everything missing in one message**: facts, files, documents. You may offer a suggested answer from the code inside each question. Do not present any point until the answers are in. If the developer says they can't find an item or have no information, note the gap and continue (step 5).
+5. **Re-ask until answered.** Check each reply against every question you asked. An unanswered question, an answer that doesn't settle it, or a supplied document that is the wrong part or revision or lacks the needed fact is asked again, saying what is still missing. Skip it only when the developer says they can't find it or have no information; then record it under *Open questions* (a document as `not found (developer)` in `Docs/REQUIRED_DOCS.md`) and continue.
 
 ## Stage 2 — Point by Point
 
@@ -82,10 +85,10 @@ Red flags: stop and rewrite the message if it contains any of these:
    Then ask: *"Does this match what you see? Shall I go to the next point?"*
 
 3. The developer agrees, rejects or asks for a check. Record the outcome (confirmed / rejected and why / open) and only then present the next point.
-4. **Documentation stop.** If a point can't be settled from the code alone, name the document and wait (Hard Rule 3). This happens with configuration (register settings, DT properties, init/mode-switch sequences, timing) and with vendor BSP/downstream code (NVIDIA L4T, TI Processor SDK, NXP BSP).
-   - If you can name the exact document (e.g. "Sony IMX586 Product Datasheet Rev X", "NVIDIA Jetson AGX Xavier TRM v1.3"), give its exact title, and a link if a search finds one.
-   - Otherwise give search segments: part number, vendor, document type, suspected revision.
-   - Mark the point *open* and do not guess register values or timing from memory. Resume when the developer confirms the document is available.
+4. **Documentation stop.** If a point can't be settled from the code alone, look for the document (Hard Rule 3). This happens with configuration (register settings, DT properties, init/mode-switch sequences, timing) and with vendor BSP/downstream code (NVIDIA L4T, TI Processor SDK, NXP BSP).
+   - Search and read it online first. Quote the fact with its URL in the point.
+   - If it can only be downloaded (a PDF datasheet, a TRM, a BSP archive), add it to `Docs/REQUIRED_DOCS.md`: its exact title (e.g. "Sony IMX586 Product Datasheet Rev X", "NVIDIA Jetson AGX Xavier TRM v1.3") or, if unsure, search terms (part number, vendor, document type, suspected revision). Tell the developer the row was added.
+   - Mark the point *open* and do not guess register values or timing from memory. Resume when the developer supplies the document in `Docs/`.
 5. **When every point is covered**, give one line per point with its outcome. Then ask whether to go through the *also noticed* list. If yes, use the same loop and template.
 6. **Nothing found?** Ask specific narrowing questions tied to what you've already ruled out, not a repeat of Stage 1. For example:
    - "Does this reproduce with `<subsystem/config>` disabled?"
@@ -131,16 +134,17 @@ The developer discusses how to apply each solution. Update it until they agree. 
    - **Open questions**
 2. Propose the name `Debug_<bug-slug>_<YYYY-MM-DD>.md`, written in the **directory the skill was invoked from** (the current working directory, not `Plans/`). Ask once: *"Do you agree with this report and its name?"*
 3. Write it **only on an explicit yes**. A correction or a "no" means fix it, show it again and ask again. Silence or "whatever" is not a yes. Tell the developer the path once written.
-4. **Offer the next step, then stop.** Say that the report is the input for planning the fix with `embed_planning-embedded-topics`, which turns it into a task list that `embed_executing_plans` runs. Ask whether to start that. Do not start it, and write no fix yourself.
+4. **Offer the next step, then stop.** Say that the report is the input for planning the fix with `embed_planning-embedded-topics`, which turns it into a todo list that `embed_executing_plans` runs on a `fix/` branch from `dev`; `embed_programming_discussion` then opens it as a Gitea pull request for the developer to review. Ask whether to start that. Do not start it, and write no fix yourself.
 
 ## Common Mistakes
 
 - Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
 - Pointing at a cause before the Stage 1 questions are answered.
+- Dropping an unanswered question, or accepting a wrong or incomplete document, instead of asking again until the developer answers or says they can't find it.
 - Assuming, or stating an assumption as a caveat, instead of asking.
 - Writing any code: a patch, a diff, a debug print, a test script, or a changed value. Also editing a source file. This holds even when the developer is in a hurry or asks for it.
 - Inventing a number (timeout, clock, rate) instead of naming the document it comes from.
-- Fetching or downloading a document yourself.
+- Downloading a document yourself instead of reading it online or listing it in `Docs/REQUIRED_DOCS.md`, or using an online fact without its URL.
 - Putting more than one point in a message, or moving on before the developer has answered.
 - Leaving out a template field, or explaining in jargon without plain words.
 - Mixing suspicious code that doesn't explain the reported symptom into the points instead of the *also noticed* list.

@@ -40,7 +40,7 @@ Pick examples from this world first: Jetson, GStreamer, MAVLink, drivers.
 4. **Resume.** If `<topic-dir>/Progress.md` exists, read it and say where the developer stands: the first day not yet passed, and any open weak points. Continue from there. Never skip ahead of it.
 5. **Level** (F1). Ask: *"Base to medium (middle-level engineer), or all the way to advanced (senior level)?"* The default only applies once the developer has answered.
 6. **Current level** (F1). Ask what the developer can already do in this topic. Their answer decides where Day 1 starts.
-7. **Online permission gate.** Every search or link fetch needs its own yes. Ask in this form: *"May I search for `<exact query>` to `<purpose>`?"* Then wait. Several queries may be listed in one message; a yes covers exactly the queries listed, never a later or broader one. Never download or fetch books, PDFs, datasheets or other platform documents, even freely licensed ones — a link to a PDF is something the developer opens and supplies, not something you fetch. Approved fetches are for HTML pages (official docs, a book's table of contents). If a search is refused, carry on with the material you have and tag claims as `unverified`. The F1 book search (F1 step 1) goes through this gate too: list all its queries in one message.
+7. **Online reading.** Search for and read web pages (official docs, a book's table of contents or sample chapters) without asking, and cite the URL of every fact you use. Never download or fetch books, PDFs, datasheets or other files, even freely licensed ones. A book or document the developer must obtain goes into `<topic-dir>/Docs/REQUIRED_DOCS.md`, one row per item: Document, Revision, Why needed, Search terms, Status (`needed`, then `supplied: <path>` or `not found (developer)`). Ask for a Markdown conversion in the ebook folder.
 
 Don't draft the day outline, the lesson or the exam until the gate questions are answered.
 
@@ -51,12 +51,12 @@ Don't draft the day outline, the lesson or the exam until the gate questions are
 1. **Books.** Work in this order:
    1. **Local library first.** From the ebook folder (Step 1 item 3), list the books relevant to this topic. Use each one's own table of contents. These are tagged `local` and can be taught and examined at once.
    2. **Candidates from expertise.** As a practitioner who has read the field's books, name the best books and documents for the topic. Don't start from a generic "best books" search.
-   3. **Online search** (through the permission gate, with all queries in one message). Use it to:
+   3. **Online search** (no permission needed; cite each URL). Use it to:
       - confirm each candidate that is not in the local folder;
       - find the free and legal source and the format: PDF, HTML, online docs, EPUB or print;
       - look for strong books or official documents that you missed.
 
-      If the search is refused, keep the candidates tagged `unverified, from training knowledge`.
+      If a search finds nothing, keep the candidates tagged `unverified, from training knowledge`.
    4. **Recommend what is missing.** List only the books and documents that are not in the local folder, at most 5 per level, sorted basic → medium (→ advanced only if asked) and ranked best first. When two are about as good, the free one ranks higher.
 
    Present two tables:
@@ -69,7 +69,7 @@ Don't draft the day outline, the lesson or the exam until the gate questions are
      - why it fits this learner;
      - **read** (the parts to read) and **skip** (the parts to skip).
 
-   Ask the developer to convert anything they get to Markdown and put it in the ebook folder. If there are fewer than 5 good books at a level, list fewer; don't pad. When a topic has no good book, official documentation (e.g. a protocol's developer guide) may take a book's place, with the same tags. The same source may appear at two levels, for different parts, and counts once toward the limit. Read/skip advice at chapter level needs the book's table of contents, supplied by the developer or found through an approved search. Until then, give read/skip at topic level and mark it as pending the table of contents.
+   Ask the developer to convert anything they get to Markdown and put it in the ebook folder. If there are fewer than 5 good books at a level, list fewer; don't pad. When a topic has no good book, official documentation (e.g. a protocol's developer guide) may take a book's place, with the same tags. The same source may appear at two levels, for different parts, and counts once toward the limit. Read/skip advice at chapter level needs the book's table of contents, supplied by the developer or read online with its URL. Until then, give read/skip at topic level and mark it as pending the table of contents.
 2. **7-day path.** For each day give:
    - **Purpose**: the one thing that must be clearly understood by the end of the hour.
    - **Context**: when you'd use it in the learner's world.
@@ -79,7 +79,7 @@ Don't draft the day outline, the lesson or the exam until the gate questions are
    - **Exam**: `.learn/bank_day<N>.json`, taken with `python3 learn.py`.
 
    Day 1 opens with a short summary of the whole knowledge area: what it is, why it matters to this learner, and how the 7 days build on each other.
-3. **Sources for every day.** A day can only be examined if its key points trace to material the developer supplied or to an approved search (F3 keys never cite memory). If a day rests only on `unverified` knowledge, say so in the path and ask the developer to supply that source or approve a search before that day is taught.
+3. **Sources for every day.** A day can only be examined if its key points trace to material the developer supplied or to an online page with its URL (F3 keys never cite memory). If a day rests only on `unverified` knowledge, say so in the path and search for that source online, or list it in `<topic-dir>/Docs/REQUIRED_DOCS.md`, before that day is taught.
 4. **Propose, then wait.** Show the path and get an explicit yes. That one yes covers everything below. Write, in this order:
    1. `<topic-dir>/Path_<YYYY-MM-DD>.md`.
    2. `<topic-dir>/Progress.md`: the header and a table row for **every** day of the path, Day 1 `not passed` and the rest `locked`. Copy the five-column header and the row shape from `references/bank-format.md` exactly: `| 1 | not passed | 0 | — | — |`, a bare day number, no `Day` prefix and no extra columns. The rows for days without a bank keep those days visible to `learn.py`.
@@ -115,7 +115,7 @@ A disputed question is checked against its `source`. If its `answer` or wording 
 
 ## F2 — Book Companion
 
-Work only from what the developer supplied (a file, pasted text, or a link read after the permission gate), and ask for Markdown, not PDF. **Read `references/companion.md` first.** Hard rules:
+Work only from what the developer supplied (a file, pasted text, or a page read online with its URL), and ask for Markdown, not PDF. **Read `references/companion.md` first.** Hard rules:
 - Cite the printed page (or rule or section number), never a line number of the `.md`. A page or chapter recalled from memory is not evidence: tag it `unverified` and ask for the source.
 - Answer in this order: the quoted key sentence with its location, the explanation, then an example that carries a reference. Never invent an example or a location.
 - Write `<topic-dir>/Book_<book-slug>.md` (Benefit, Structure, First sentences, Read / skip) only after the developer says yes.
@@ -134,17 +134,17 @@ Two kinds: a **path day** (taken with `python3 learn.py`, graded by `learn.py`, 
 - Ignoring an existing `Progress.md` and restarting or skipping days.
 - Saving to a folder the developer didn't confirm, or not recording a new topic's folder in `~/.agents/Learning/INDEX.md`, so the next session can't find its `Progress.md`.
 - Drafting a day outline, lesson or exam before the gate questions (level, current level, slug) are answered.
-- Searching or fetching a link without a yes for that specific query, or treating one earlier yes as standing permission for queries not listed.
-- Teaching or examining a day whose only source is `unverified` training knowledge without first asking for the source or an approved search.
+- Using an online fact without its URL, or downloading a file instead of listing it in `<topic-dir>/Docs/REQUIRED_DOCS.md`.
+- Teaching or examining a day whose only source is `unverified` training knowledge without first searching for the source online or listing it in `REQUIRED_DOCS.md`.
 - Downloading a book, PDF or datasheet, even a freely licensed one, instead of letting the developer obtain it.
 - Asking for, or reading, a PDF when the developer could supply a Markdown conversion. Using a Markdown file without first checking that it is readable and that its page numbers are present.
 - Citing a line number in a `.md` file instead of the printed page. Teaching a diagram-dependent point from the text alone, without its PDF page. Keeping an `unverified` claim after a supplied source contradicts it.
 - Stating a fact, chapter, page or example with no evidence tag. Recalling page or chapter numbers from memory as if they were cited.
-- Inventing an example instead of using a referenced one or asking to search.
+- Inventing an example instead of using a referenced one or searching online for one.
 - Theory with no "when you'd use this" context first, or theory that isn't applied in embedded work.
 - More than 5 books at a level, padding a level with weak books, or giving chapter-level read/skip advice without the table of contents.
 - Recommending books before asking for the local ebook folder, or recommending a book the developer already has locally. Not recording the ebook folder in `INDEX.md`.
-- Building the book list from a generic search instead of starting from expertise. Skipping the online check of recommended books, or running it without the permission gate. Tagging a book `free` without giving its official source, or giving a direct download link. Leaving the `free` tag off a free book.
+- Building the book list from a generic search instead of starting from expertise. Skipping the online check of recommended books. Tagging a book `free` without giving its official source, or giving a direct download link. Leaving the `free` tag off a free book.
 - A day whose reading overruns the 1-hour budget, or teaching a day from one book when another supplied book explains a point better. Summarise across books, citing each point to its own source.
 - Advancing to the next day below 100%, for any reason: "solid score", "just a typo", time pressure, the developer asking to move on.
 - Re-using the same questions for a chapter retake instead of writing new ones on the same targets.

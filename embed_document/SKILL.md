@@ -29,7 +29,7 @@ Ask for anything else you don't know, one specific question each:
 - **Install target** (BUILD mode) — which distro / package manager the install commands should target, when the project doesn't settle it. Offer what the project suggests (e.g. an `apt` list in a CI file) as a suggested answer.
 - Any other fact the evidence in Step 2 can't confirm.
 
-**Hard rule — ask, never assume.** A stated assumption ("I'll assume Ubuntu") does not satisfy this; an inference from the codebase is a *suggested answer* inside the question. Platform documents (datasheet, TRM, app note) are rarely needed for a README or BUILD.md — don't ask for them by default; if one is truly needed, name the exact document and ask the developer. **Never fetch or download documentation yourself.**
+**Hard rule — ask, never assume.** A stated assumption ("I'll assume Ubuntu") does not satisfy this; an inference from the codebase is a *suggested answer* inside the question. Platform documents (datasheet, TRM, app note) are rarely needed for a README or BUILD.md — don't ask for them by default; if one is truly needed, read it online first (cite the URL); only if it can't be read online, list it in `Docs/REQUIRED_DOCS.md` for the developer to download by hand. **Never download documentation yourself.**
 
 | Rationalization | Reality |
 |---|---|
@@ -60,7 +60,7 @@ Fixed section order: table of contents, About the Project, Project Status, Getti
 
 - Pass the README's prose through `embed_writing` before Step 5. Commands, versions and feature statuses stay unchanged.
 - Put working, copy-pasteable commands in Getting Started; every command comes from the project's own scripts or build files.
-- `Project Status` states what builds, what is not implemented and what is in progress, each from the developer's per-feature status answers (Step 2) — a plan step alone, or code alone, is not enough.
+- `Project Status` states what builds, what is not implemented and what is in progress, each from the developer's per-feature status answers (Step 2) — a plan todo alone, or code alone, is not enough.
 - Dependencies are summarised in the README and point to `BUILD.md` for the full list.
 
 ## Step 4 — BUILD Mode
@@ -83,7 +83,7 @@ Show the `embed_writing` result as a diff (or the full new file) per document, w
 
 ## Step 6 — Report
 
-After writing: the files changed, remaining `TODO:` markers, and any statement you could not source. Write nothing outside `README.md` / `BUILD.md` — no plan edits, no knowledge files (suggest `/embed_summary` if durable decisions came up).
+After writing: the files changed, remaining `TODO:` markers, and any statement you could not source. Write nothing outside `README.md` / `BUILD.md` (and `Docs/REQUIRED_DOCS.md`) — no plan edits, no knowledge files (suggest `/embed_summary` if durable decisions came up).
 
 ## Common Mistakes
 
@@ -92,7 +92,7 @@ After writing: the files changed, remaining `TODO:` markers, and any statement y
 - Writing documentation from memory of the conversation instead of from Plans, code and build files, with feature status from the developer.
 - Stating a fact (license, authors, status, a command, a dependency version) that no source confirmed instead of asking or leaving a `TODO:`.
 - Asking for the project root or mode (they are the invocation directory and both files), or assuming the target distro or any other unknown instead of asking; stating the assumption as a caveat instead of getting an answer.
-- Fetching or downloading a datasheet, TRM or other platform document, or asking for one when the README/BUILD.md doesn't need it — if one is truly needed, name it and ask the developer.
+- Downloading a datasheet, TRM or other platform document, or asking for one when the README/BUILD.md doesn't need it — if one is truly needed, read it online or list it in `Docs/REQUIRED_DOCS.md`.
 - Documenting a function as working because a plan lists it, or because code/`git log` suggests it, instead of asking the developer for each planned feature's status.
 - Documenting or checking functions that no plan lists.
 - Overwriting hand-written README content that is still true, or rewriting sections that are already correct.

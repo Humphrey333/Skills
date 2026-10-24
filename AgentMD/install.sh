@@ -164,5 +164,17 @@ walk
 seed_index "$HOME/.agents/Knowledge/INDEX.md" "Embedded Knowledge Index"
 seed_index "$HOME/.agents/Learning/INDEX.md" "Learning Topics"
 
+# Gitea review flow (embed_programming_discussion): warn only, never change Gitea or git config.
+check_gitea() {
+  if ! command -v tea >/dev/null 2>&1; then
+    echo "warning: tea not found; install it for the Gitea review flow (README: Gitea setup (once))" >&2
+    return 0
+  fi
+  if ! tea login list -o csv 2>/dev/null | grep -q '^Agent,http://localhost:3000,[^,]*,Agent,'; then
+    echo "warning: no tea login 'Agent' (user Agent) on http://localhost:3000 (README: Gitea setup (once))" >&2
+  fi
+}
+check_gitea
+
 echo "installed=$n_inst same=$n_same skipped=$n_skip overwritten=$n_over"
 echo "Restart your agent sessions to load the changes."

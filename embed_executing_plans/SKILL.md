@@ -1,95 +1,98 @@
 ---
 name: embed_executing_plans
-description: "Use when an embedded-engineering plan (Plans/Plan_<slug>_<date>.md from embed_planning-embedded-topics) has been approved and its tasks must now be implemented, or the developer says \"execute the plan\" or \"start coding the plan\". Not for: planning a new topic (use embed_planning-embedded-topics), locating a bug (use embed_debug), or writing docs (use embed_document)."
+description: "Use when an embedded-engineering plan (Plans/Plan_<slug>_<date>.md from embed_planning-embedded-topics) has been approved and its todos must now be implemented, or the developer says \"execute the plan\" or \"start coding the plan\". Not for: planning a new topic (use embed_planning-embedded-topics), locating a bug (use embed_debug), writing docs (use embed_document), or a pull request that was reviewed or merged (use embed_programming_discussion)."
 ---
 
 # Executing Plans
 
 ## Overview
 
-Run an approved plan task by task, in this session. Every code or document change is shown to the developer and needs an explicit yes before it is written. Everything else runs without stopping. The plan already did the thinking: follow it exactly, and ask when it is wrong or silent.
+Run the approved plan's `## Todo` list on a new branch from `dev`, one commit per todo, without asking between todos and without printing diffs in the CLI. The code follows `embed_programming`. When the last todo is done, load `embed_programming_discussion`: it pushes the branch, opens the pull request into `dev` in the developer's local Gitea, and handles the review and the merge. The plan already did the thinking: follow it exactly, and ask when it is wrong or silent.
 
 **Violating the letter of these rules is violating the spirit of them.**
 
 ## When to Use
 
-- A plan exists at `Plans/Plan_<slug>_<date>.md` with a `## Tasks` list, and the developer approved it.
-- Not for: a plan that is not approved or has no `## Tasks` (go back to `embed_planning-embedded-topics`); a bug with no plan yet (use `embed_debug`); docs only (use `embed_document`).
+- A plan exists at `Plans/Plan_<slug>_<date>.md` with a `## Todo` list, the developer approved it, and the project has a Gitea repo (made by `embed_create_coding_template` with `embed_programming_discussion`).
+- Not for: a plan that is not approved (go back to `embed_planning-embedded-topics`); a bug with no plan yet (use `embed_debug`); docs only (use `embed_document`); a pull request that was reviewed or merged (use `embed_programming_discussion`).
 
 ## Hard Rules
 
-1. **Gate the changes, not the tasks.** An explicit yes is needed for exactly these, and nothing else:
-   1. changing existing code, shown as a line-by-line diff per file;
-   2. adding new code, shown one function block (function, class or struct) per message;
-   3. settling a bug point or choosing a solution;
-   4. moving to the next workflow step;
-   5. changing a document, shown as a diff.
-
-   Show the change before writing it. Silence, "ok whatever" or your own judgment is not a yes. Reading, searching, host builds and tests, ticking the plan and a task's verify step run without stopping. A failed verify stops and reports.
-2. **Follow the plan.** Do not add, skip, reorder or reshape tasks. If a task is wrong, impossible or silent on a needed detail, stop and ask. Do not rule on it yourself.
-3. **Ask, never assume.** A register value, pin, timing, path or behavior the plan and the developer did not give is asked for. A stated assumption is still an assumption.
-4. **Never fetch or download a document** (datasheet, TRM, errata, app note). Name the exact document, or give search segments, and wait for the developer to supply it.
-5. **Code follows `embed_programming`.** Load it before the first task.
-6. **Evidence before claims.** A task is done only when its `verify` step ran in this session and you read the output. Hardware checks that cannot run here are handed to the developer with the expected result, and the task stays open until they report.
+1. **Work on a branch from `dev`.** All work happens on `feature/<plan-slug>` (new feature) or `fix/<plan-slug>` (bug-fix plan, from a `Debug_*.md` report), made from an up-to-date `dev`. Never commit to `dev` or `main`. Pushing, the pull request and the review belong to `embed_programming_discussion`.
+2. **Run to the end without asking.** Do not stop between todos for a yes. Print no diffs in the CLI: one status line per todo is the whole report. Gitea is where the developer sees the change.
+3. **Stop only for these:** a fact the plan and the developer did not give (ask, and ask again until it is answered or the developer says they can't find it); a todo that is wrong or impossible (ask, never rule on it yourself); a check that still fails after one root-cause fix; a hardware check that only the developer can run.
+4. **Follow the plan.** Do not add, skip, reorder or reshape todos.
+5. **Ask, never assume.** A register value, pin, timing, path or behavior nobody gave or cited is asked for. A stated assumption is still an assumption.
+6. **Read online, never download.** Prefer reading documents online, without asking, and cite the URL. Only a document that can't be read online goes into `Docs/REQUIRED_DOCS.md`; then wait for the developer to download and supply it.
+7. **Code follows `embed_programming`**, including its function-header comment on every function written or changed. Load it before the first todo.
+8. **Evidence before claims.** A todo is done only when its check ran in this session and you read the output.
 
 | Rationalization | Reality |
 |---|---|
-| "This change is small, I'll write it and show it after" | Show it first. A yes after the fact is not approval. |
-| "I'll show the whole new file at once" | Modified code: a line-by-line diff. New code: one function block per message. |
-| "I'll ask before running the tests too" | Host builds, tests and verify steps run without stopping. Only the five gates wait. |
-| "The plan is wrong here, I'll do the right thing" | Stop and ask. A silent deviation is an unapproved change. |
-| "It should pass, the change was trivial" | "Should" is not evidence. Run the verify step and read it. |
-| "I'll fill in this value, it is the usual one" | A value nobody supplied is an assumption. Ask, or name the document. |
-| "Asking again slows things down" | A wrong task built on a guess costs the whole task again. |
+| "I'll show this diff in the chat so they can follow" | No diffs in the CLI. Gitea shows them. One status line per todo. |
+| "I'll ask before the next todo to be safe" | Todos run without asking. Stop only for the reasons in Hard Rule 3. |
+| "It's a tiny fix, I'll commit it on dev" | Every change goes on its own branch and through a pull request. |
+| "I'll push and open the PR myself, it's quicker" | Load `embed_programming_discussion`; it holds the Agent account rules. |
+| "The plan is wrong here, I'll do the right thing" | Stop and ask. A silent deviation is an unreviewed decision. |
+| "It should pass, the change was trivial" | "Should" is not evidence. Run the check and read it. |
+| "I'll fill in this value, it is the usual one" | A value nobody supplied or cited is an assumption. Ask, read it online, or list the document. |
 
-Red flags — stop: writing code or a doc before its yes; editing a file no task names; writing "assuming…"; a verify step you did not run.
+Red flags (stop): a diff printed in the chat; a commit on `dev` or `main`; a `tea` command run from this skill; writing "assuming…"; a check you did not run.
 
-## The Task Loop
+## Step 1 — Setup
 
-1. **Setup (once).** Read the plan and its `## Tasks`. Tick state lives in the plan: a task marked `- [x]` is done, so resume at the first `- [ ]`. Tell the developer which task you are starting. Load `embed_programming`.
-2. **Do the task.** Prepare exactly the change the task describes, in the files it names. Show it in the gate's form (Hard Rule 1) and write it only after the yes for that diff or block. When the check can run on the host, write it first and watch it fail, then make it pass.
-3. **Verify.** Run the task's `verify` step. Show the command and the real output.
-4. **Report.** Use this shape, then go on to the next task. Stop only when the next task needs a gate, verify failed, or a hardware check is with the developer:
+1. Read the plan and its `## Todo`. Load `embed_programming`.
+2. **Gitea.** `git remote -v` must show a remote on `localhost:3000`. If there is none, stop: this flow is for projects made by `embed_create_coding_template`; tell the developer and wait. Load `embed_programming_discussion` and run its Step 1 (Agent check), so commits carry the `Agent` identity from the first todo.
+3. **Clean tree.** If the working tree has uncommitted changes, stop and ask the developer what to do with them.
+4. **Branch.** `git switch dev && git pull`, then `git switch -c <feature|fix>/<plan-slug>`, or switch to it if it exists (resuming).
+5. **Local-only folders.** Add `Docs/` to `.git/info/exclude` if it is not there, so vendor documents are never committed.
+6. **Resume.** Todos ticked `- [x]` in the plan are done. `git log dev..HEAD --format=%s` shows the `<plan-slug> todo N:` commits. Start at the first unticked todo. If the plan has `## Review results`, read it first.
+7. Tell the developer in one line: the branch and the todo you start at.
 
-   ```
-   Task N of M — <name>
-   - Changed: files and a one-line summary each
-   - Verified: command → result (or: hand-off check for the developer + expected result)
-   - Deviations: none / the question you need answered
-   ```
+## Step 2 — Run the todos
 
-   Pass the report's wording through `embed_writing`. Commands and their real output stay unchanged.
+For each todo, in order:
 
-5. **Tick** the task `- [x]` in the plan file once its verify passed (or the developer reported the hardware check). A correction means fix the task and show it again.
+1. Make exactly the change the todo describes, following `embed_programming`. When the check can run on the host, write it first and watch it fail, then make it pass.
+2. Run the todo's check and read the output.
+3. Commit only the files of this todo: `git commit -m "<plan-slug> todo N: <summary>"`, with a body line for anything a reviewer must know.
+4. Tick the todo `- [x]` in the plan file.
+5. Print one status line: `todo N/M <name>: done, check <command> → <result>`. No diff.
+
+A hardware or board check that can't run here is not a blocker for the next todo. Record it for the pull request description and hand it to the developer with the expected result.
+
+## Step 3 — Hand over to the discussion
+
+After the last todo:
+
+1. Read the whole branch diff (`git diff dev...HEAD`) once against the plan. Note anything the plan did not ask for and anything a todo left undone.
+2. Load `embed_programming_discussion` and run its Step 3 (open the pull request), passing the plan, every check with its real result, the board checks handed to the developer, and the notes from item 1. Its Steps 4 and 5 handle the review rounds and the merge.
+3. After it confirms the merge, propose Step 3 of the workflow, and wait. Do not run it yourself:
+   - `/embed_summary` captures what was learned;
+   - `/embed_document` updates README.md and BUILD.md.
 
 ## Board results (bug-fix plans)
 
-When the plan came from a `Debug_*.md` report (it has a `## Board results` section), each task's board check goes to the developer. Record every report there: solution, tested or not, worked or not, what the developer saw. When every solution is tested:
+When the plan came from a `Debug_*.md` report (it has a `## Board results` section), each todo's board check goes to the developer. Record every report there: solution, tested or not, worked or not, what the developer saw. When every solution is tested:
 
-- One worked: go to Finish.
-- None worked: show every point and solution tried, with its result, and propose going back to `embed_debug` with that list (its re-entry case). Do not look for new causes yourself.
-
-## Finish
-
-After the last task is ticked:
-
-1. Read the whole diff once against the plan. Report anything the plan did not ask for, and anything a task left undone.
-2. Propose Step 3 (optional), and wait. Do not run them yourself: `/embed_summary` captures what was learned, `/embed_document` updates README.md and BUILD.md.
+- One worked: continue with the review.
+- None worked: show every point and solution tried, with its result. Propose going back to `embed_debug` with that list (its re-entry case). Do not look for new causes yourself.
 
 ## Common Mistakes
 
 - Showing prose to the developer, or writing it to a file, without passing it through `embed_writing` first, or letting that pass change a command, number, heading or required question, or remove or change a fact, reason, hedge or warning.
-- Writing a code or document change before the developer's yes, or showing a whole file instead of a line-by-line diff or one function block at a time.
-- Stopping for a yes on reading, searching, a host build, a test or a verify step.
-- Deviating from the plan (adding, skipping, reordering, reshaping a task) instead of stopping to ask.
-- Assuming a missing value or fetching a platform document instead of asking.
-- Claiming a task done without running its verify step, or without reading the output.
-- Marking a hardware-only check as passed instead of handing it to the developer.
+- Printing diffs in the CLI, or stopping between todos for a yes instead of running to the end.
+- Branching from a stale `dev`, committing on `dev` or `main`, mixing two todos in one commit, or committing `Docs/`.
+- Running on a project with no Gitea remote instead of stopping, or branching over uncommitted changes without asking.
+- Skipping `embed_programming_discussion`'s Agent check before the first commit, or pushing, opening the pull request or reading the review here instead of through that skill.
+- Deviating from the plan (adding, skipping, reordering, reshaping a todo) instead of stopping to ask.
+- Assuming a missing value, downloading a document, or using an online fact without its URL.
+- Claiming a todo done without running its check, or marking a hardware-only check as passed instead of handing it to the developer.
+- Forgetting to tick `- [x]` in the plan, so a resumed session redoes finished todos.
 - Not recording board results, or hunting for a new cause yourself when no solution worked instead of proposing `embed_debug` re-entry.
-- Writing code without loading `embed_programming`.
+- Writing code without loading `embed_programming`, or without the function-header comments.
 - Running `/embed_summary` or `/embed_document` yourself instead of proposing them.
-- Forgetting to tick `- [x]` in the plan, so a resumed session redoes finished tasks.
 
 ---
 
-Derived from `executing-plans` in obra/superpowers (MIT License). Rewritten for the `embed_*` chain: per-change approval gate, no subagents, worktrees or ledger scripts.
+Derived from `executing-plans` in obra/superpowers (MIT License). Rewritten for the `embed_*` chain: a branch per plan and a Gitea pull request (through `embed_programming_discussion`) instead of per-task approval, no subagents, worktrees or ledger scripts.

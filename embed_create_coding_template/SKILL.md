@@ -1,6 +1,6 @@
 ---
 name: embed_create_coding_template
-description: "Use when a plan for a new embedded C/C++ userspace project has been agreed with embed_planning-embedded-topics and the developer wants the CMake project skeleton created on disk (src, include, test, tools, docs, lint configs, build/BUILD docs) before coding starts, or wants an existing project's .clang-format/.clang-tidy refined. Not for planning (see embed_planning-embedded-topics), existing bugs (see embed_debug), or kernel modules, Yocto recipes and vendor-source patch projects."
+description: "Use when a plan for a new embedded C/C++ userspace project has been agreed with embed_planning-embedded-topics and the developer wants the CMake project skeleton created on disk (src, include, test, tools, docs, lint configs, build/BUILD docs) and pushed to the local Gitea with main and dev branches before coding starts, or wants an existing project's .clang-format/.clang-tidy refined. Not for planning (see embed_planning-embedded-topics), existing bugs (see embed_debug), or kernel modules, Yocto recipes and vendor-source patch projects."
 ---
 
 # Create Coding Template
@@ -8,6 +8,8 @@ description: "Use when a plan for a new embedded C/C++ userspace project has bee
 ## Overview
 
 After a plan is agreed, create the project skeleton so the next coding skill (or the developer) starts from a tree that already configures, builds and passes one test. The skeleton is **real files** in `templates/project/` next to this document, copied into a new project folder and specialised by placeholder substitution plus the agreed plan. The project is built standalone first and later goes into a Yocto build, so nothing in it may need the network at configure time.
+
+Once it builds, `embed_programming_discussion` pushes the skeleton to the developer's local Gitea as a private repo with `main` (releases) and `dev` (work) branches (Step 7).
 
 Core rule: **the template is the definition; the plan only fills it in.** Do not redesign the layout per project.
 
@@ -19,7 +21,7 @@ Core rule: **the template is the definition; the plan only fills it in.** Do not
 
 ## Step 1 — Require the Agreed Plan
 
-Locate `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` for this topic. If there is none, or it has no chosen direction and plan steps, **stop** and tell the developer to finish `/embed_planning-embedded-topics` first. Do not scaffold from a verbal description.
+Locate `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` for this topic. If there is none, or it has no chosen direction and `## Todo` list, **stop** and tell the developer to finish `/embed_planning-embedded-topics` first. Do not scaffold from a verbal description.
 
 From the plan, extract (these become *suggested answers* in Step 2, not confirmed ones):
 
@@ -88,6 +90,10 @@ Run, in the new project, and report the **actual output**:
 
 Cross builds are **not** run here (the sysroot may not be populated); say so. Then report: the tree, the template path used, build/test output, remaining `TODO:` markers, and the next commands from `BUILD.md`. Write nothing outside the new project folder — no plan-doc edits, no knowledge files (suggest `/embed_summary` if durable decisions came up).
 
+## Step 7 — Publish to Gitea
+
+Every new project lives in the developer's local Gitea, with `main` for releases and `dev` for work. Only after Step 6 passed, load `embed_programming_discussion` and run its Step 2 (new repo): it creates the repo as the `Agent` user, pushes `main` and `dev`, and transfers the repo to the developer. Return here only to finish the report.
+
 ## Refining Lint Configs
 
 When invoked on an existing project, read its `.clang-format` / `.clang-tidy`, diff them against the template versions, and propose specific changes with a reason each. Wait for approval, then write only the approved changes. Never replace the developer's config wholesale with the template.
@@ -107,3 +113,4 @@ When invoked on an existing project, read its `.clang-format` / `.clang-tidy`, d
 - Replacing an existing `.clang-format` / `.clang-tidy` without proposing a diff.
 - Inventing module behavior, dependencies, or test expectations the plan does not state.
 - Writing outside the new project folder.
+- Publishing to Gitea before Step 6 passed, or doing the Gitea part here instead of through `embed_programming_discussion`.

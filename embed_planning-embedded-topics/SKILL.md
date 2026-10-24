@@ -7,7 +7,7 @@ description: "Use when starting a new embedded-engineering topic (new peripheral
 
 ## Overview
 
-A new embedded topic goes through three stages, in strict order: research (facts and trade-offs only, no code), planning (pick a direction, then build a step-by-step plan with a task list), and hand-off (the approved plan goes to `embed_executing_plans`). This skill never writes code. The plan is closed out with a clean recap and an explicit final approval, then stored as `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory before the hand-off.
+A new embedded topic goes through three stages, in strict order: research (facts and trade-offs only, no code), planning (pick a direction, then write a short plan: summary, recap of the decisions, todo list), and hand-off (the approved plan goes to `embed_executing_plans`). This skill never writes code. The plan is closed out with a clean recap and an explicit final approval, then stored as `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory before the hand-off.
 
 ## When to Use
 
@@ -29,9 +29,9 @@ Before anything else, read `~/.agents/Knowledge/INDEX.md` (one line per topic, m
 When the developer brings an `embed_debug` report, the report replaces the broad research of Stage 1:
 
 1. Read the report. Its confirmed points and agreed solutions are the starting facts. Do not re-research the bug.
-2. For each solution, name any document the fix needs (exact title, or search segments) and wait for the developer to supply it. Never search or fetch it yourself.
+2. For each solution, find any document the fix needs: read it online first (cite the URL); only if it can't be read online, add it to `Docs/REQUIRED_DOCS.md` and wait for the developer to download and supply it.
 3. Agree the fix for each solution with the developer. When a solution has several ways to apply it, give the trade-offs and let the developer choose (Stage 2 Step 1).
-4. Write one task per solution. `Do` is the smallest fix in words, following `embed_programming` (reuse what exists, fix the root cause, reach every caller). `Verify` is `developer builds and runs on the board: <expected result from the report>`.
+4. Write one todo per solution. The todo gives the smallest fix in words, following `embed_programming` (reuse what exists, fix the root cause, reach every caller), and ends with its check: `developer builds and runs on the board: <expected result from the report>`.
 5. Add an empty `## Board results` section at the end of the plan; `embed_executing_plans` fills it.
 
 Then continue with Stage 2 Step 3 (recap, approval, save) and Stage 3.
@@ -41,7 +41,7 @@ Then continue with Stage 2 Step 3 (recap, approval, save) and Stage 3.
 > **We are not coding yet. Ask questions about anything you're uncertain about.**
 
 - Gather and summarize what's known about the topic/problem domain, starting from the knowledge loaded in Step 0: relevant existing code in the project, prior art, platform/hardware constraints. Open questions recorded in knowledge files are still open — ask them, don't treat them as answered.
-- **Hard rule — ask, never assume:** if any point relevant to the topic isn't explicitly stated by the developer — requirements, constraints, hardware details, desired behavior, scope, edge cases, a platform/component document (datasheet, TRM, errata) — stop and ask. Do not guess, infer a "reasonable default," or fill the gap yourself, even temporarily. Same no-fetch rule as `embed_debug` Stage 2 for documents: never download one yourself; name the exact document (or search segments if unsure) and wait for the developer to supply it.
+- **Hard rule — ask, never assume:** if any point relevant to the topic isn't explicitly stated by the developer — requirements, constraints, hardware details, desired behavior, scope, edge cases, a platform/component document (datasheet, TRM, errata) — stop and ask. Do not guess, infer a "reasonable default," or fill the gap yourself, even temporarily. Documents: prefer reading online; search and read them without asking, and cite the URL of every fact you use. Never download one; downloads are the developer's, by hand. Only a document that can't be read online goes into `Docs/REQUIRED_DOCS.md` in the project folder, one row per document: Document, Revision, Why needed, Search terms, Status (`needed`, then `supplied: Docs/<file>` or `not found (developer)`); then wait for the developer to supply it.
   - Stating an assumption out loud ("I'll assume X unless told otherwise") does not satisfy this rule — it is still an assumption. Ask the question and wait for an explicit answer instead of proceeding on a caveat.
   - An inference drawn from the existing codebase is a *suggested answer*, not a confirmed one — surface it as part of the question, don't substitute it for asking.
 
@@ -52,8 +52,11 @@ Then continue with Stage 2 Step 3 (recap, approval, save) and Stage 3.
   | "Asking slows things down" | An acted-on wrong assumption costs far more than one question. |
   | "I can infer this from the code" | Inference isn't the developer's confirmation — offer it as your suggested answer within the question. |
   | "It's just research, not code yet" | Research is exactly where an unconfirmed assumption gets baked into the plan, then the code. |
+  | "They skipped that question, so it can't matter" | Unanswered is not "not needed". Ask again until they answer or say they can't. |
+  | "The document they sent is close enough" | A wrong part, revision or a document without the needed fact does not answer the question. Say what is wrong and ask again. |
 
   Red flags — stop and ask instead of continuing: writing "assuming…"/"presumably…" anywhere in the doc; filling in a register value, pin, timing, protocol detail, or behavior that wasn't stated or supplied; picking a default for anything the developer left open.
+- **Re-ask until answered.** Check every reply against the questions you asked. A question left unanswered, an answer that doesn't settle it, or a supplied document that is the wrong part or revision or doesn't hold the needed fact is asked again in the next message, saying what is still missing. Skip it only when the developer says they can't find it or have no information; then record it under the plan's open questions, and a document as `not found (developer)` in `Docs/REQUIRED_DOCS.md`. Never drop a question silently, and don't move to Stage 2 while one is still open.
 - For every viable approach/aspect, write out explicit **pros, cons, and trade-offs**. This comparison is the most important output of this stage — don't skip or shortcut it even when one option looks obviously best.
 - Note any experiments that would help down-select between close options (e.g. a quick spike, a benchmark, a hardware-in-loop check).
 - **Do not generate pseudocode or implementation code here or anywhere in this skill** — code belongs to `embed_executing_plans` (with `embed_programming`).
@@ -64,26 +67,23 @@ Then continue with Stage 2 Step 3 (recap, approval, save) and Stage 3.
 
 Present the researched approaches with their trade-offs and ask the developer which direction/technology/method to pursue. Do not pick for them. Wait for an explicit choice before moving on.
 
-### Step 2 — Build the Step-by-Step Plan
+### Step 2 — Write the Plan
 
-Once a direction is chosen, write the implementation/porting plan as ordered steps. Every step that involves programming must carry concrete instructions (what to change, which files/APIs/registers, why). Include verification criteria alongside the plan (tests, hardware-in-loop checks, expected log/register state, how to confirm each step worked).
+The questions were asked carefully in Stage 1, so the plan stays short. Once a direction is chosen, write it in three parts, in this order:
 
-End the plan with a `## Tasks` section, which `embed_executing_plans` runs one task at a time. Each task is a checkbox with three fields, small enough to review in one sitting:
+1. **Summary**: what the plan is for and what it changes, in a few lines.
+2. **Recap**: a short table of what was discussed and decided (constraints, chosen direction and the main trade-off, answers the developer gave, documents with their URL or `Docs/` path).
+3. **`## Todo`**: a numbered checklist, `- [ ] N. <what to change, in which files/APIs/registers, and why>`. A todo that involves programming carries enough concrete detail to code it without asking. Each todo ends with its check (test, host build, expected log or register state, or a board check for the developer).
 
-```
-- [ ] Task N — <name>
-  - Files: paths to create or change
-  - Do: the concrete change, in words (what, which API/register, why)
-  - Verify: the command or check, and the result that means pass
-```
+No step-by-step section besides the todo list. `embed_executing_plans` runs the todos in order on a branch from `dev`, one commit per todo, without asking between them.
 
-The README and build/run instructions are not tasks here. They are written afterwards with `embed_document`.
+The README and build/run instructions are not todos here. They are written afterwards with `embed_document`.
 
 ### Step 3 — Final Review and Approval (gate before Stage 3)
 
-Once the step-by-step plan is settled, do not move on silently:
+Once the plan is settled, do not move on silently:
 
-1. **Recap the plan cleanly and briefly** as a standalone document the developer can read without the discussion: topic/goal, confirmed constraints, chosen direction (with the one-line reason and the main trade-off accepted), the ordered steps, verification criteria, and any still-open questions. No new content — only what was already agreed. Pass the recap's prose through `embed_writing` before showing it.
+1. **Show the plan cleanly and briefly** as a standalone document the developer can read without the discussion: the summary, the recap (topic/goal, confirmed constraints, chosen direction with the one-line reason and the main trade-off accepted), the `## Todo` list with each todo's check, and any still-open questions. No new content — only what was already agreed. Pass the recap's prose through `embed_writing` before showing it.
 2. **Propose the file name** `Plan_<topic-slug>_<YYYY-MM-DD>.md` (slug = what the plan is for, e.g. `Plan_imx586-mipi-csi-bringup_2026-10-10.md`) and ask exactly once: *"Do you agree with this plan, and with saving it under this name?"*
 3. **Wait for an explicit yes.** Corrections or "no" → fix the plan, re-show the recap, and ask again. Silence, "looks fine, whatever", or your own judgment that it's agreed does not count.
 4. **On yes:** write the recap to `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory (create `Plans/` if missing), tell the developer the path, then continue to Stage 3. Do not start Stage 3 before the file is written.
@@ -92,13 +92,13 @@ Once the step-by-step plan is settled, do not move on silently:
 
 The skill ends here. It writes no code, README or build instructions.
 
-- Tell the developer the plan is ready to run with `embed_executing_plans`, which shows each code or document change for a yes before writing it and uses `embed_programming` for the code.
-- If the plan is for a new C/C++ userspace project, mention that `embed_create_coding_template` can create the skeleton first (as the plan's first task, if the developer wants it).
+- Tell the developer the plan is ready to run with `embed_executing_plans`. It works on a branch from `dev` in the project's Gitea repo, commits each todo without asking, and uses `embed_programming` for the code. Then `embed_programming_discussion` pushes it as the `Agent` user and opens a pull request into `dev`. The developer reviews and merges it in Gitea.
+- If the plan is for a new C/C++ userspace project, mention that `embed_create_coding_template` creates the skeleton, and `embed_programming_discussion` its Gitea repo, first (as the plan's first todo, if the developer wants it). A project with no Gitea repo can't use `embed_executing_plans`.
 - Wait for the developer to start the next skill. Do not start it yourself.
 
 ## Save the Topic Doc
 
-The stored doc is `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory, written once at the Stage 2 Step 3 approval gate (not before, not left unsaved after). Content: research summary + trade-offs (Stage 1), chosen direction + step-by-step plan + verification criteria + `## Tasks` (Stage 2). If the plan changes later, update the same file and re-confirm with the developer.
+The stored doc is `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current directory, written once at the Stage 2 Step 3 approval gate (not before, not left unsaved after). Content: summary, recap of the discussion (with the Stage 1 trade-offs and the chosen direction), and `## Todo` (Stage 2). `embed_executing_plans` later ticks the todos and adds `## Review results` (and `## Board results` for a bug fix). If the plan changes later, update the same file and re-confirm with the developer.
 
 ## Common Mistakes
 
@@ -110,9 +110,10 @@ The stored doc is `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md` in the current direc
 - Moving from Stage 2 to Stage 3 without the clean recap, the single final "do you agree?" question, and an explicit yes.
 - Treating the developer's lack of objection as approval, or saving the plan file before they confirm it (and its name).
 - Saving the plan under any name other than `Plans/Plan_<topic-slug>_<YYYY-MM-DD>.md`, or outside the current directory's `Plans/`.
-- Writing plan steps without concrete, actionable instructions for whoever implements them.
-- Ending the plan without the `## Tasks` checklist (Files / Do / Verify per task), so `embed_executing_plans` has nothing to run.
+- Writing todos without concrete, actionable instructions for whoever implements them, or without a check, so `embed_executing_plans` can't run and commit them one by one.
+- Writing a long step-by-step section instead of the summary, recap and `## Todo` list.
 - Writing the README or build instructions here, or starting `embed_executing_plans` without the developer asking.
-- In bug-fix mode: re-researching the bug instead of starting from the report, or writing a fix task whose `Verify` is not a board check by the developer.
-- Guessing at missing information or fetching a platform document yourself instead of asking (Stage 1 hard rule).
+- In bug-fix mode: re-researching the bug instead of starting from the report, or writing a fix todo whose check is not a board check by the developer.
+- Guessing at missing information instead of asking, downloading a document yourself, listing one in `Docs/REQUIRED_DOCS.md` before trying to read it online, or using an online fact without its URL (Stage 1 hard rule).
+- Dropping a question the developer didn't answer, or accepting a wrong or incomplete document, instead of asking again until they answer or say they can't find it.
 - Filling any undeclared point — a detail, default, or inference — with an assumption instead of stopping to ask, or stating the assumption as a caveat instead of getting explicit confirmation.
