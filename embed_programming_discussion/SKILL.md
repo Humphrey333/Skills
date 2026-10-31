@@ -9,6 +9,8 @@ description: "Use when code from embed_programming must be discussed with the de
 
 The code review is a discussion in the developer's local Gitea at `http://localhost:3000`. You are the Gitea user `Agent`; the developer is the reviewer and the repo owner. You create the repo, push the work branch, open a pull request into `dev`, read the developer's review, fix what it asks, reply in one short line, and confirm the merge. The developer merges and releases (`dev` → `main`). You never merge and never use the developer's token.
 
+**Defaults** (developer's choice, 2026-10-31; don't ask for them): the developer's Gitea user is `Humphrey333` (reviewer, maintainer, final owner of every repo); Agent's commit email is `someAddress@gmail.com`; the remote is always HTTP, `http://localhost:3000/<owner>/<repo>.git`, never SSH.
+
 **Violating the letter of these rules is violating the spirit of them.**
 
 ## When to Use
@@ -44,8 +46,8 @@ Red flags (stop): any `tea` command without `--login Agent`; a push to `dev` or 
 Run in the project folder:
 
 1. `tea login list`: a login named `Agent` on `http://localhost:3000` whose USER is `Agent`. If `tea` is missing, ask the developer to install it (https://gitea.com/gitea/tea). If the login is missing or shows another user, ask the developer to add it themselves (`! tea login add --name Agent --url http://localhost:3000 --token <Agent's token>`), see `AgentMD/README.md` "Gitea setup (once)". Wait.
-2. Repo-local commit identity: `git config --local user.name` is `Agent` and `user.email` is Agent's Gitea email. If not, ask the developer for the email and set both with `git config --local`.
-3. For an HTTP remote, the repo-local credential helper is pinned to `Agent`:
+2. Repo-local commit identity: `git config --local user.name` is `Agent` and `user.email` is `someAddress@gmail.com`. If not, set both with `git config --local`, without asking.
+3. The remote is always HTTP (once `origin` exists, `git remote get-url origin` starts with `http://localhost:3000/`; if it is SSH or anything else, stop and ask). The repo-local credential helper is pinned to `Agent`:
 
    ```bash
    git config --local --replace-all credential.http://localhost:3000.helper ''
@@ -59,12 +61,11 @@ Run in the project folder:
 The project folder has passed the template's Step 6 and has no `.git` yet.
 
 1. If the folder sits inside another git repo, ask before `git init` (it becomes a nested repo). Then `git init -b main`, run Step 1 items 2 and 3, `git add -A`, `git commit -m "<project-name>: initial skeleton"`, and `git branch dev`.
-2. Ask the developer for their Gitea username (the final owner), offering the other login's USER in `tea login list` as the suggestion.
-3. `tea repos create --login Agent --name <project-slug> --private` (no `--init`: the history comes from the local repo). If the name exists, stop and ask.
-4. Ask whether to use HTTP (`http://localhost:3000/Agent/<project-slug>.git`) or the SSH URL from the create output, then `git remote add origin <url>` and `git push -u origin main dev`.
-5. **Transfer to the developer:** `tea api --login Agent -X POST 'repos/Agent/<project-slug>/transfer' -f new_owner=<developer user>`. Ask the developer to accept the transfer in Gitea and to keep `Agent` as a **Write** collaborator (add it back if Gitea dropped it). Wait, then check: `tea api --login Agent 'repos/<developer user>/<project-slug>'` shows the new owner and `"push": true`.
-6. `git remote set-url origin http://localhost:3000/<developer user>/<project-slug>.git` (or the matching SSH URL), `git fetch origin`.
-7. Report the repo URL, the pushed branches, and that `docs/pull_request_template.md` is the pull request body. After this, nothing commits to `main`.
+2. `tea repos create --login Agent --name <project-slug> --private` (no `--init`: the history comes from the local repo). If the name exists, stop and ask.
+3. `git remote add origin http://localhost:3000/Agent/<project-slug>.git` and `git push -u origin main dev`.
+4. **Transfer to the developer:** `tea api --login Agent -X POST 'repos/Agent/<project-slug>/transfer' -f new_owner=Humphrey333`. Ask the developer to accept the transfer in Gitea and to keep `Agent` as a **Write** collaborator (add it back if Gitea dropped it). Wait, then check: `tea api --login Agent 'repos/Humphrey333/<project-slug>'` shows the new owner and `"push": true`.
+5. `git remote set-url origin http://localhost:3000/Humphrey333/<project-slug>.git`, `git fetch origin`.
+6. Report the repo URL, the pushed branches, and that `docs/pull_request_template.md` is the pull request body. After this, nothing commits to `main`.
 
 ## Step 3 — Open the pull request (called by `embed_executing_plans`)
 
@@ -116,6 +117,8 @@ When the developer says the pull request is merged:
 - Running a `tea` command without `--login Agent`, or with a login whose USER is not `Agent`.
 - Pushing without the repo-local credential helper pinned to `Agent`, or committing without the repo-local `Agent` identity.
 - Typing, asking for or storing a token or password.
+- Asking for the remote type, the developer's username or Agent's email instead of using the defaults.
+- Using an SSH or https remote instead of `http://localhost:3000/...`.
 - Merging the pull request, pushing to `dev` or `main`, or deleting the remote branch.
 - Working around a failed login, push or transfer instead of stopping and asking.
 - Creating the repo public or with `--init`, or leaving it under the `Agent` account instead of transferring it to the developer and checking `"push": true`.

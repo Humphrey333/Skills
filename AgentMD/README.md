@@ -39,17 +39,40 @@ cd Skills/AgentMD
 bash install.sh                     # all agents, copy mode
 bash install.sh --link              # symlink to this clone instead of copying
 bash install.sh --agents claude,codex
+bash install.sh --gitea             # also set up the local Gitea review workspace
 ```
 
 - Agents: `claude`, `codex`, `gemini`, `antigravity` (default: all).
 - If a target already exists and differs, the script lists every such item first, then asks once: overwrite all or skip all. With no terminal it skips all. An overwritten file or skill is replaced with no backup, so copy anything you want to keep first.
 - Developer-only files (`Requi*`, `Plans*`) are never copied into the installed skills.
 - Restart your agent sessions afterwards.
-- At the end the installer warns (and changes nothing) if `tea` is missing or there is no `Agent` login. See the next section.
+- Without `--gitea`, the installer ends with a warning (and changes nothing) if `tea` is missing or there is no `Agent` login. See the next section.
 
 ## Gitea setup (once)
 
-Code review runs in a local Gitea at `http://localhost:3000`. The agent works there as its own Gitea user, `Agent`, and never with your token. You own the repos, review and merge.
+Code review runs in a local Gitea at `http://localhost:3000`. Two accounts take part:
+
+- `Agent`: the agent's own Gitea user (the agent). All code from the agent is pushed as `Agent`. It never uses your token.
+- `Humphrey333`: you, the reviewer and maintainer. You own every repo, review the pull requests and merge.
+
+### Automatic: `bash install.sh --gitea`
+
+Run it in a terminal. Each step is skipped when it is already done, so running it again is safe.
+
+| Step | Done by |
+|---|---|
+| Install `tea`, the Gitea CLI (`brew install tea`) | script |
+| Start Gitea: `docker run -d --name=gitea --restart unless-stopped -p 3000:3000 -p 222:22 -v gitea-data:/data gitea/gitea:latest` (or `docker start gitea` if it exists) | script |
+| Type the Gitea URL (Enter keeps `http://localhost:3000`); the script waits until Gitea answers | you type, script checks |
+| Open the URL, finish the install page the first time, and register your own account (the first account is the admin) | you, in the browser |
+| Type your Gitea username (Enter keeps `Humphrey333`); the script checks it exists | you type, script checks |
+| Create the user `Agent` and its token (the script prints the steps, the same as steps 2 and 3 below) | you, in the browser |
+| Paste the `Agent` token at the hidden prompt; the script runs `tea login add --name Agent` and checks it | you paste, script logs in |
+| Name the repos you already own that `Agent` should work on; add `Agent` as Write collaborator on each; the script checks `Agent` can push | you, in the browser; script checks |
+
+The `gitea-data` volume keeps repos and accounts when the container is removed. A `gitea` container started earlier without that volume is reused as it is, and its data is lost if you remove it.
+
+### By hand (fallback)
 
 1. Install `tea`, the Gitea CLI (https://gitea.com/gitea/tea). Tested with `tea` 0.16 and Gitea 28.2.
 2. As a Gitea admin, create the user `Agent`: Site Administration → User Accounts → Create User Account. Log in as `Agent` once to set its password.
@@ -61,7 +84,11 @@ Code review runs in a local Gitea at `http://localhost:3000`. The agent works th
    tea login list          # the Agent row must show USER Agent
    ```
 
-5. New repos: `Agent` creates the repo and pushes `main` and `dev`, then transfers it to you. Accept the transfer in Gitea and keep `Agent` as a **Write** collaborator (Repo → Settings → Collaborators). For an existing repo of yours, add `Agent` as a Write collaborator the same way.
+5. For an existing repo of yours, add `Agent` as a **Write** collaborator (Repo → Settings → Collaborators).
+
+### New repos
+
+`Agent` creates the repo when the project is first set up (`embed_create_coding_template` → `embed_programming_discussion`), pushes `main` and `dev`, then transfers it to you. Accept the transfer in Gitea and keep `Agent` as a **Write** collaborator (Repo → Settings → Collaborators).
 
 The agent sets two things per repo, only in that repo's `.git/config`: the commit identity `Agent`, and a credential helper that asks `tea` for the `Agent` token on push. Your global git config is not touched.
 
