@@ -43,7 +43,9 @@ Red flags (stop): any `tea` command without `--login Agent`; a push to `dev` or 
 
 ## Step 1 — Agent check (every time)
 
-Run in the project folder:
+First check that Gitea is up: `curl -fsS http://localhost:3000/api/v1/version`. If it doesn't answer, tell the developer the server is down and to start it themselves with `! docker start gitea`. Wait, then check again.
+
+Then run in the project folder:
 
 1. `tea login list`: a login named `Agent` on `http://localhost:3000` whose USER is `Agent`. If `tea` is missing, ask the developer to install it (https://gitea.com/gitea/tea). If the login is missing or shows another user, ask the developer to add it themselves (`! tea login add --name Agent --url http://localhost:3000 --token <Agent's token>`), see `AgentMD/README.md` "Gitea setup (once)". Wait.
 2. Repo-local commit identity: `git config --local user.name` is `Agent` and `user.email` is `someAddress@gmail.com`. If not, set both with `git config --local`, without asking.
@@ -121,6 +123,7 @@ When the developer says the pull request is merged:
 - Using an SSH or https remote instead of `http://localhost:3000/...`.
 - Merging the pull request, pushing to `dev` or `main`, or deleting the remote branch.
 - Working around a failed login, push or transfer instead of stopping and asking.
+- Starting Gitea yourself, or going on while it doesn't answer, instead of telling the developer to run `docker start gitea` and waiting.
 - Creating the repo public or with `--init`, or leaving it under the `Agent` account instead of transferring it to the developer and checking `"push": true`.
 - Treating empty review lists as "no comments" instead of asking the developer to submit a `PENDING` draft.
 - Leaving a review comment without a fix or a reply, writing a long reply, or deciding a disputed comment yourself.
